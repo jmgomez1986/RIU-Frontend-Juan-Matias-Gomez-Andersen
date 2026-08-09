@@ -1,0 +1,74 @@
+<mat-card class="overflow-hidden" appearance="outlined">
+  <mat-card-content class="p-0">
+    <!-- Image Container -->
+    <div class="relative aspect-[3/4] w-full overflow-hidden">
+      <img
+        [src]="hero().image"
+        [alt]="`Image of ${hero().name}`"
+        class="h-full w-full object-cover"
+      />
+
+      <!-- Top Overlays -->
+      <div class="absolute top-3 left-3 flex items-center gap-2">
+        <div
+          class="h-3 w-3 rounded-full"
+          [class]="hero().status === 'Active' ? 'bg-green-500' : 'bg-red-500'"
+        ></div>
+        <div
+          class="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-gray-700 shadow-sm"
+        >
+          {{ hero().status }}
+        </div>
+      </div>
+
+      <div class="absolute top-3 right-3">
+        <div
+          class="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm"
+        >
+          {{ hero().universe }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Container -->
+    <div class="p-4 flex flex-col gap-3">
+      <!-- Name and Category -->
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 leading-tight">{{ hero().alias }}</h2>
+          <p class="text-sm text-gray-500">{{ hero().name }}</p>
+          <!-- Alias placeholder -->
+        </div>
+        <div class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">
+          {{ hero().category }}
+        </div>
+      </div>
+
+      <!-- Team -->
+      <div
+        class="inline-block w-fit rounded bg-purple-100 px-2 py-0.5 text-[10px] font-medium text-purple-700"
+      >
+        {{ hero().team }}
+      </div>
+
+      <!-- Description -->
+      <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+        The {{ hero().name }} is a powerful hero with incredible abilities, protecting the world
+        from the greatest threats.
+      </p>
+
+      <!-- Powers -->
+      <div class="space-y-2">
+        <h4 class="font-medium text-sm">Powers:</h4>
+        <div class="flex flex-wrap gap-1">
+          @for (power of hero().powers.slice(0, 3); track $index) {
+            <mat-chip class="h-5">{{ power }}</mat-chip>
+          }
+          @if (hero().powers.length > 3) {
+            <mat-chip class="text-xs opacity-60">{{ hero().powers.length - 3 }} más</mat-chip>
+          }
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
