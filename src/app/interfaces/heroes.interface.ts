@@ -5,8 +5,8 @@ export interface HeroesGridRequest {
 
 export interface HeroesResponsePaginated {
   first: number;
-  prev: null;
-  next: number;
+  prev: number | null;
+  next: number | null;
   last: number;
   pages: number;
   items: number;
