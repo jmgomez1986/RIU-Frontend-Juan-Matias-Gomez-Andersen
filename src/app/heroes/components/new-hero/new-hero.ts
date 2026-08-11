@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   FormBuilder,
   FormControl,
@@ -18,9 +19,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import Swal from 'sweetalert2';
 import { HeroesService } from '../../../services/heroes';
 import { Hero } from '../../../interfaces/heroes.interface';
-import { Router } from '@angular/router';
 
 interface HeroeCategory {
   value: string;
@@ -116,10 +117,29 @@ export default class NewHero {
   onSubmit(): void {
     if (this.heroForm.valid) {
       console.log('Form Submitted Data:', this.heroForm.value);
-      const newHero: Hero = { ...this.heroForm.value };
-      this.heroesService.addNewHero(newHero).subscribe((resp) => {
-        console.log({ resp });
-        this.router.navigate(['/heroes']);
+
+      Swal.fire({
+        title: '¿Está seguro que desea guardar los cambios?',
+        text: 'Se creará un nuevo Héroe con los datos cargados.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const newHero: Hero = { ...this.heroForm.value };
+          this.heroesService.addNewHero(newHero).subscribe((resp) => {
+            console.log({ resp });
+            Swal.fire({
+              title: 'Se guardò con éxito',
+              text: 'Tú nuevo Héroe ha sido creado.',
+              icon: 'success',
+            });
+            this.router.navigate(['/heroes']);
+          });
+        }
       });
     }
   }

@@ -680,6 +680,17 @@
       "description": "test 03",
       "powers": [],
       "id": "FB_Oh7tMeTQ"
+    },
+    {
+      "name": "",
+      "alias": "",
+      "status": "1",
+      "category": "",
+      "universe": "",
+      "team": "",
+      "description": "",
+      "powers": null,
+      "id": "VhYuEsgZutc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
