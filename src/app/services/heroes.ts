@@ -15,7 +15,9 @@ export class HeroesService {
   getHeroes(): Observable<Hero[]> {
     return this.http
       .get<Hero[]>(this.apiUrl)
-      .pipe(map((heroes) => heroes.map((hero) => ({ ...hero, image: this.resolveImage(hero.image) }))));
+      .pipe(
+        map((heroes) => heroes.map((hero) => ({ ...hero, image: this.resolveImage(hero.image) }))),
+      );
   }
 
   // Devuelve los heroes de la db paginados
@@ -41,5 +43,9 @@ export class HeroesService {
   // "Content-Type: application/json" y json-server lo parsee correctamente.
   addNewHero(newHero: Hero): Observable<NewHeroRespone> {
     return this.http.post<NewHeroRespone>(this.apiUrl, newHero);
+  }
+
+  deleteHero(heroId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${heroId}`);
   }
 }
