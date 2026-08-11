@@ -36,4 +36,8 @@ export class HeroesGrid {
     this.currentPage.set(e.pageIndex + 1);
     this.itemsPerPage.set(e.pageSize);
   }
+
+  refreshHeroes() {
+    this.heroesResource.reload();
+  }
 }

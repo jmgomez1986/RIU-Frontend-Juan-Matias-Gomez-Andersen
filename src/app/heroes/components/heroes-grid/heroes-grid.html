@@ -8,7 +8,7 @@
     } @else {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 auto-rows-fr">
         @for (hero of heroesResource.value()?.data; track hero.id) {
-          <app-hero-grid-card [hero]="hero"></app-hero-grid-card>
+          <app-hero-grid-card [hero]="hero" (heroDeleted)="refreshHeroes()"></app-hero-grid-card>
         } @empty {
           <div class="col-span-full text-center text-gray-500 py-10">
             No se encontraron resultados.
