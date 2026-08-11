@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
-import { Hero, HeroesResponsePaginated } from '../interfaces/heroes.interface';
+import { Hero, HeroesResponsePaginated, NewHeroRespone } from '../interfaces/heroes.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +29,9 @@ export class HeroesService {
         data: resp.data.map((hero) => ({ ...hero, image: `images/${hero.image}` })),
       })),
     );
+  }
+  // Grabar un nuevo heroe en la db
+  addNewHero(newHero: Hero): Observable<NewHeroRespone> {
+    return this.http.post<NewHeroRespone>(this.apiUrl, JSON.stringify(newHero));
   }
 }

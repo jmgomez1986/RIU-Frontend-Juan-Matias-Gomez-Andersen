@@ -13,6 +13,12 @@ export const routes: Routes = [
       {
         path: 'new-hero',
         loadComponent: () => import('./pages/new-hero-page/new-hero-page'),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./heroes/components/new-hero/new-hero'),
+          },
+        ],
       },
       {
         path: '**',
