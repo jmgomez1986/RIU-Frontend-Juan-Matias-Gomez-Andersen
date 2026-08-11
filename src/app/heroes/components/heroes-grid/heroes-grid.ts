@@ -12,7 +12,6 @@ import { HeroGridCard } from '../hero-grid-card/hero-grid-card';
   selector: 'app-heroes-grid',
   imports: [HeroGridCard, MatPaginatorModule, MatProgressSpinnerModule],
   templateUrl: './heroes-grid.html',
-  styleUrl: './heroes-grid.scss',
 })
 export class HeroesGrid {
   // Services

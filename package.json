@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "api": "json-server --port 3000 db.json"
+    "test:coverage": "ng test --watch=false --coverage",
+    "api": "node server.mjs"
   },
   "private": true,
   "packageManager": "npm@11.16.0",
@@ -20,9 +21,11 @@
     "@angular/material": "^21.2.14",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@sweetalert2/ngx-sweetalert2": "^15.0.0",
     "@tailwindcss/postcss": "^4.3.3",
     "postcss": "^8.5.26",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.26.25",
     "tailwindcss": "^4.3.3",
     "tslib": "^2.3.0"
   },
@@ -30,6 +33,7 @@
     "@angular/build": "^21.2.20",
     "@angular/cli": "^21.2.20",
     "@angular/compiler-cli": "^21.2.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^28.0.0",
     "json-server": "^1.0.0-beta.15",
     "prettier": "^3.8.1",

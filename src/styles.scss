@@ -38,3 +38,26 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+//Se ajusta la altura del wrapper del mat-form-field
+.custom-css-height .mat-mdc-text-field-wrapper {
+  height: 45px !important;
+}
+
+// Se ajusta la alineacion verticaldel mat-for-field
+.custom-css-height .mat-mdc-form-field-infix {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  min-height: unset !important;
+}
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+  font-size: 1.6em !important;
+  line-height: 1.15 !important;
+}
+
+div:where(.swal2-icon) {
+  position: relative;
+  width: 4em !important;
+  height: 4em !important;
+}
