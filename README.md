@@ -40,4 +40,7 @@ npm run api
 
 ## NOTAS
 
-Se configura un proxy por ser una buena practica, no es necesario, pero evita problemas de CORS y el uso de rutas relativas como /api/heroes, y queria hacer una implementacion lo mas completa posible
+Se configura un proxy por ser una buena practica para json-serve, no es necesario, pero evita problemas de CORS y el uso de rutas relativas como /api/heroes, y queria hacer una implementacion lo mas completa posible
+
+Se crea el archivo server.mjs para aumentar el limite los endpoints, y se cambio el script para levantar el backend, informacion sacada de documentacion y pos, esto es para poder permitir la subida de imagenes, aunque esta limitada a 1mb, al hacer el POS por ejemplo como para la imagen se guarda en base64, daba un error 500
+Por otro lado se encapsulo todo lo relativo a subida de imagen en un componente para que no "ensucie" el resto del formulario ya que termino siendo complejo y extenso

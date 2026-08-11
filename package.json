@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:coverage": "ng test --watch=false --coverage",
-    "api": "json-server --port 3000 db.json"
+    "api": "node server.mjs"
   },
   "private": true,
   "packageManager": "npm@11.16.0",
