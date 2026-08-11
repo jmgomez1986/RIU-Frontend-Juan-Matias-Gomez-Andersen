@@ -10,7 +10,6 @@ import { Hero } from '../../../interfaces/heroes.interface';
   selector: 'app-hero-grid-card',
   imports: [MatCardModule, MatButtonModule, MatChipsModule],
   templateUrl: './hero-grid-card.html',
-  styleUrl: './hero-grid-card.scss',
 })
 export class HeroGridCard {
   hero = input.required<Hero>();

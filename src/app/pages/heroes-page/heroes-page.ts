@@ -7,7 +7,6 @@ import { HeroesGrid } from '../../heroes/components/heroes-grid/heroes-grid';
   selector: 'app-heroes-page',
   imports: [HeroesGrid, MatButtonModule, RouterOutlet],
   templateUrl: './heroes-page.html',
-  styleUrl: './heroes-page.scss',
 })
 
 // Para que funcione el import del lazyLoading en el ruteo, la clase hay que exportrla por 'default'
