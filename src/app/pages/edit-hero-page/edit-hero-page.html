@@ -4,13 +4,13 @@
       <h1
         class="text-5xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4"
       >
-        Crear un Nuevo Heroe
+        Edita el Nuevo Heroe
       </h1>
-      <p class="text-gray-600 text-lg">Crea un nuevo heroe o villano para tú catálogo.</p>
+      <p class="text-gray-600 text-lg">Edita un heroe o villano del catálogo.</p>
     </div>
 
     <div>
-      <app-new-hero></app-new-hero>
+      <app-edit-hero [hero]="heroeResource.value()"></app-edit-hero>
     </div>
   </div>
 </div>

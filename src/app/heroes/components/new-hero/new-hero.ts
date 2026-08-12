@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -26,6 +26,8 @@ import {
   CustomUploadImage,
   CustomUploadImageSelection,
 } from '../../../components/custom-upload-image';
+import { Observable } from 'rxjs';
+import { HeroesUtilsService } from '../../../services/heroe-utils';
 
 interface HeroeCategory {
   value: string;
@@ -40,7 +42,6 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-
 @Component({
   selector: 'app-new-hero',
   imports: [
@@ -59,8 +60,12 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
 })
 export default class NewHero {
   matcher = new HeroErrorStateMatcher();
+  // Signals
+  hero = input<Hero>();
+  mode = signal<string>('create');
   // Services
   readonly heroesService = inject(HeroesService);
+  readonly heroesUtilsService = inject(HeroesUtilsService);
   private router = inject(Router);
 
   heroForm: FormGroup = new FormGroup({});
@@ -71,7 +76,21 @@ export default class NewHero {
   readonly reactivePowersWords = signal<string[]>([]);
 
   constructor(private fb: FormBuilder) {
+    // Se obtiene el valor de mode del state del roter
+    const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
+    this.mode.set(state?.mode ?? 'create');
     this.buildHeroForm();
+    effect(() => {
+      const heroData = this.hero();
+
+      if (heroData) {
+        this.heroForm.patchValue(heroData);
+        this.reactivePowersWords.set(heroData.powers);
+        if (this.mode() === 'view') {
+          this.heroForm.disable();
+        }
+      }
+    });
   }
 
   buildHeroForm() {
@@ -82,9 +101,9 @@ export default class NewHero {
       category: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
       universe: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
       team: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
-      description: ['', { validators: [Validators.required, Validators.maxLength(60)] }],
+      description: ['', { validators: [Validators.required, Validators.maxLength(150)] }],
       powers: [],
-      image: [''],
+      image: ['', { validators: [Validators.required] }],
     });
   }
 
@@ -121,35 +140,47 @@ export default class NewHero {
 
   onSubmit(): void {
     if (this.heroForm.valid) {
-      console.log('Form Submitted Data:', this.heroForm.value);
-
       Swal.fire({
-        title: '¿Está seguro que desea guardar los cambios?',
-        text: 'Se creará un nuevo Héroe con los datos cargados.',
+        title: `¿Está seguro que desea guardar los cambios realizados?`,
+        text:
+          this.mode() === 'create'
+            ? 'Se creará un nuevo Héroe con los datos cargados.'
+            : 'Se guardaran los cambios realizados.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Guardar',
+        confirmButtonText: `${this.mode() === 'create' ? 'Crear' : 'Editar'}`,
         cancelButtonText: 'Cancelar',
       }).then((result) => {
         if (result.isConfirmed) {
           const newHero: Hero = { ...this.heroForm.value };
-          this.heroesService.addNewHero(newHero).subscribe({
+          const heroId = this.hero()?.id ?? '';
+          const heroesServiceObservable$: Observable<any> =
+            this.mode() === 'create'
+              ? this.heroesService.addNewHero(newHero)
+              : this.heroesService.editHero(heroId, newHero);
+          heroesServiceObservable$.subscribe({
             next: (resp) => {
-              console.log({ resp });
               Swal.fire({
                 title: 'Se guardó con éxito',
-                text: 'Tú nuevo Héroe ha sido creado.',
+                text:
+                  this.mode() === 'create'
+                    ? 'Tú nuevo Héroe ha sido creado.'
+                    : 'El Héeroe ha sido editado',
                 icon: 'success',
               });
+              this.heroesUtilsService.refreshLoad();
               this.router.navigate(['/heroes']);
             },
             error: (err) => {
-              console.error('No se pudo guardar el héroe:', err);
+              console.error(
+                `No se pudo ${this.mode() === 'create' ? 'guardar' : 'editar'} el héroe:`,
+                err,
+              );
               Swal.fire({
                 title: 'Error',
-                text: 'No se pudo guardar el héroe. Intente nuevamente.',
+                text: `No se pudo ${this.mode() === 'create' ? 'guardar' : 'editar'} el héroe. Intente nuevamente.`,
                 icon: 'error',
               });
             },

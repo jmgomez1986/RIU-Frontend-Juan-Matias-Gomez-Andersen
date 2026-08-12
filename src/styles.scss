@@ -39,23 +39,31 @@ body {
 }
 /* You can add global styles to this file, and also import other style files */
 
+//Estilos para Angular Material
+
 //Se ajusta la altura del wrapper del mat-form-field
 .custom-css-height .mat-mdc-text-field-wrapper {
   height: 45px !important;
 }
-
-// Se ajusta la alineacion verticaldel mat-for-field
+// Se ajusta la alineacion verticaldel mat-form-field
 .custom-css-height .mat-mdc-form-field-infix {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
   min-height: unset !important;
 }
+// Se ajusta matpaginator
+mat-paginator {
+  background: transparent !important;
+}
 
+// Estilos para SweeWal
+
+// Se ajusta el texto de consulta
 div:where(.swal2-container) h2:where(.swal2-title) {
   font-size: 1.6em !important;
   line-height: 1.15 !important;
 }
-
+// Se ajusta el icono de la alerta
 div:where(.swal2-icon) {
   position: relative;
   width: 4em !important;

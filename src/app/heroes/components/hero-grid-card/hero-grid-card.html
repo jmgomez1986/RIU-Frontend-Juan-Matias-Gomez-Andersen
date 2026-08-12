@@ -53,8 +53,7 @@
 
       <!-- Description -->
       <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
-        The {{ hero().name }} is a powerful hero with incredible abilities, protecting the world
-        from the greatest threats.
+        {{ hero().description }}
       </p>
 
       <!-- Powers -->
@@ -71,7 +70,9 @@
       </div>
     </div>
   </mat-card-content>
-  <mat-card-actions>
-    <button matButton (click)="deleteHero(hero().id)">Eliminar</button>
+  <mat-card-actions class="flex justify-between">
+    <button matButton (click)="deleteHero()">Eliminar</button>
+    <button matButton (click)="viewHero()">Consultar</button>
+    <button matButton (click)="editHero()">Editar</button>
   </mat-card-actions>
 </mat-card>

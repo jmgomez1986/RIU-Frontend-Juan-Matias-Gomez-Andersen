@@ -25,6 +25,6 @@ export interface Hero {
   universe: string;
 }
 
-export interface NewHeroRespone {
+export interface NewHeroResponse {
   res: Hero;
 }
