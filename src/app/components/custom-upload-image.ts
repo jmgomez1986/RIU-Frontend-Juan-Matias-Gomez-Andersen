@@ -1,5 +1,5 @@
-import { Component, output, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, output, signal, input, effect } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,9 @@ export interface CustomUploadImageSelection {
   styleUrl: './custom-upload-image.scss',
 })
 export class CustomUploadImage {
+  // Signals
+  mode = input<string>('create');
+  heroImage = input<string>('');
   /** Previsualización de la imagen seleccionada (data URL). */
   readonly imagePreview = signal<string | null>(null);
   /** Nombre del archivo seleccionado (nombre.extension). */
@@ -38,6 +41,23 @@ export class CustomUploadImage {
 
   /** Emite la imagen seleccionada (base64 + nombre). Emite con valores null al reiniciar. */
   readonly selectionChange = output<CustomUploadImageSelection>();
+
+  constructor() {
+    effect(() => {
+      const image = this.heroImage();
+      if (image) {
+        const isBase64 = image.startsWith('data:');
+        // base64 → se usa tal cual; nombre de archivo → se busca en public/images
+        this.imagePreview.set(isBase64 ? image : `images/${image}`);
+        this.imageFileName.set(isBase64 ? 'Imagen existente' : image);
+        this.imageNameControl.setValue(this.imageFileName() ?? '');
+      } else {
+        this.imagePreview.set(null);
+        this.imageFileName.set(null);
+        this.imageNameControl.setValue('');
+      }
+    });
+  }
 
   onFileSelect(event: Event): void {
     const element = event.target as HTMLInputElement;

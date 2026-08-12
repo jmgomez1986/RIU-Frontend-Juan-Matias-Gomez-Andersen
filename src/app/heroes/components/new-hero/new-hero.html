@@ -1,6 +1,10 @@
-<form [formGroup]="heroForm" (ngSubmit)="onSubmit()" class="form-container">
+<form [formGroup]="heroForm" class="form-container">
   <!-- Carga de imagen del Héroe (componente reutilizable) -->
-  <app-custom-upload-image (selectionChange)="onImageChanged($event)" />
+  <app-custom-upload-image
+    [mode]="mode()"
+    [heroImage]="hero()?.image ?? ''"
+    (selectionChange)="onImageChanged($event)"
+  />
 
   <div class="grid grid-cols-2 gap-4 items-start">
     <!-- Column 1 -->
@@ -129,7 +133,7 @@
         @if (heroForm.get('description')?.hasError('required')) {
           <mat-error>La descripción del Héroe es obligatoria.</mat-error>
         } @else if (heroForm.get('description')?.hasError('maxlength')) {
-          <mat-error>El nombre debe tener un máximo de 60 caracteres.</mat-error>
+          <mat-error>El nombre debe tener un máximo de 150 caracteres.</mat-error>
         }
       </mat-form-field>
     </div>
@@ -160,6 +164,8 @@
 </form>
 
 <div class="flex justify-end gap-6">
-  <button matButton="filled" (click)="onSubmit()">Guardar</button>
+  @if (mode() !== 'view') {
+    <button matButton="filled" (click)="onSubmit()" [disabled]="heroForm.invalid">Guardar</button>
+  }
   <button matButton="outlined" (click)="cancelSubmit()">Cancelar</button>
 </div>

@@ -21,8 +21,8 @@ export class HeroGridCard {
   readonly heroesService = inject(HeroesService);
   private router = inject(Router);
 
-  deleteHero(heroId: string) {
-    console.log({ heroId });
+  deleteHero() {
+    console.log({ heroId: this.hero().id });
 
     Swal.fire({
       title: '¿Está seguro que desea eliminar el héroe',
@@ -35,7 +35,7 @@ export class HeroGridCard {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.heroesService.deleteHero(heroId).subscribe({
+        this.heroesService.deleteHero(this.hero().id).subscribe({
           next: (resp) => {
             console.log({ resp });
             Swal.fire({
@@ -43,7 +43,6 @@ export class HeroGridCard {
               text: 'Tú nuevo Héroe ha sido creado.',
               icon: 'success',
             });
-            this.router.navigate(['/heroes']);
             this.heroDeleted.emit();
           },
           error: (err) => {
@@ -57,5 +56,12 @@ export class HeroGridCard {
         });
       }
     });
+  }
+
+  editHero() {
+    this.router.navigate([`/edit-hero/${this.hero().id}`], { state: { mode: 'edit' } });
+  }
+  viewHero() {
+    this.router.navigate([`/edit-hero/${this.hero().id}`], { state: { mode: 'view' } });
   }
 }

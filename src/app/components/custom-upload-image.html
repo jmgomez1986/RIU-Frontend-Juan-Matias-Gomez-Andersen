@@ -32,7 +32,12 @@
 
     <!-- Botón de Angular Material que dispara el cuadro de diálogo -->
     <div class="col-start-4 col-end-4">
-      <button type="button" mat-raised-button color="accent" (click)="fileInput.click()">
+      <button
+        type="button"
+        matButton="outlined"
+        (click)="fileInput.click()"
+        [disabled]="mode() === 'view'"
+      >
         <mat-icon>cloud_upload</mat-icon>
         Elegir imagen
       </button>
