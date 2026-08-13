@@ -60,11 +60,13 @@
       <div class="space-y-2">
         <h4 class="font-medium text-sm">Powers:</h4>
         <div class="flex flex-wrap gap-1">
-          @for (power of hero().powers.slice(0, 3); track $index) {
-            <mat-chip class="h-5">{{ power }}</mat-chip>
-          }
-          @if (hero().powers.length > 3) {
-            <mat-chip class="text-xs opacity-60">{{ hero().powers.length - 3 }} más</mat-chip>
+          @if (hero().powers) {
+            @for (power of hero().powers.slice(0, 3); track $index) {
+              <mat-chip class="h-5">{{ power }}</mat-chip>
+            }
+            @if (hero().powers.length > 3) {
+              <mat-chip class="text-xs opacity-60">{{ hero().powers.length - 3 }} más</mat-chip>
+            }
           }
         </div>
       </div>

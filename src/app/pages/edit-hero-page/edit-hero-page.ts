@@ -29,6 +29,5 @@ export default class EditHeroPage {
     // Se obtiene el valor de mode del state del roter
     const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
     this.mode.set(state?.mode ?? 'edit');
-    console.log({ Mode: this.mode() });
   }
 }

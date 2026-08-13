@@ -31,6 +31,7 @@ import {
   CustomUploadImageSelection,
 } from '../../../components/custom-upload-image/custom-upload-image';
 import { HeroesUtilsService } from '../../../services/heroe-utils';
+import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
 
 interface HeroeCategory {
   value: string;
@@ -49,6 +50,7 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-new-hero',
   imports: [
     CustomUploadImage,
+    TransformTextUppercase,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,

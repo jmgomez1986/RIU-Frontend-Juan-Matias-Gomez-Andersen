@@ -36,7 +36,6 @@ export class HeroGridCard {
       if (result.isConfirmed) {
         this.heroesService.deleteHero(this.hero().id).subscribe({
           next: (resp) => {
-            console.log({ resp });
             Swal.fire({
               title: 'Se eliminó el héroe con éxito',
               text: 'Tú nuevo Héroe ha sido creado.',
