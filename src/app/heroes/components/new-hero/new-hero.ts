@@ -1,6 +1,8 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 import {
   FormBuilder,
   FormControl,
@@ -10,6 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,14 +22,14 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
+import { MatCardModule } from '@angular/material/card';
+
 import { HeroesService } from '../../../services/heroes';
 import { Hero } from '../../../interfaces/heroes.interface';
 import {
   CustomUploadImage,
   CustomUploadImageSelection,
-} from '../../../components/custom-upload-image';
-import { Observable } from 'rxjs';
+} from '../../../components/custom-upload-image/custom-upload-image';
 import { HeroesUtilsService } from '../../../services/heroe-utils';
 
 interface HeroeCategory {
@@ -45,6 +48,7 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-new-hero',
   imports: [
+    CustomUploadImage,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -54,7 +58,7 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
     MatRadioModule,
     MatChipsModule,
     MatIconModule,
-    CustomUploadImage,
+    MatCardModule,
   ],
   templateUrl: './new-hero.html',
 })
@@ -98,7 +102,7 @@ export default class NewHero {
       name: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
       alias: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
       status: ['Active'],
-      category: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
+      category: ['Hero', { validators: [Validators.required, Validators.maxLength(10)] }],
       universe: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
       team: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
       description: ['', { validators: [Validators.required, Validators.maxLength(150)] }],

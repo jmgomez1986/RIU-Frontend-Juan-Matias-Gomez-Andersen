@@ -1,4 +1,4 @@
-<mat-card class="overflow-hidden" appearance="outlined">
+<mat-card class="overflow-hidden !shadow-xl" appearance="outlined">
   <mat-card-content class="p-0">
     <!-- Image Container -->
     <div class="relative aspect-[3/4] w-full overflow-hidden">
@@ -71,8 +71,23 @@
     </div>
   </mat-card-content>
   <mat-card-actions class="flex justify-between">
-    <button matButton (click)="deleteHero()">Eliminar</button>
-    <button matButton (click)="viewHero()">Consultar</button>
-    <button matButton (click)="editHero()">Editar</button>
+    <div class="flex flex-col items-center">
+      <button matButton="elevated" class="!bg-red-400 !text-white" (click)="deleteHero()">
+        <mat-icon>delete</mat-icon>
+        Eliminar
+      </button>
+    </div>
+    <div class="flex flex-col items-center">
+      <button matButton="elevated" class="!bg-green-400 !text-white" (click)="viewHero()">
+        <mat-icon>visibility</mat-icon>
+        Consultar
+      </button>
+    </div>
+    <div class="flex flex-col items-center">
+      <button matButton="elevated" class="!bg-indigo-400 !text-white" (click)="editHero()">
+        <mat-icon>edit</mat-icon>
+        Editar
+      </button>
+    </div>
   </mat-card-actions>
 </mat-card>

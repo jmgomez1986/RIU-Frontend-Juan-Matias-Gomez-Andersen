@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CustomUploadImage, CustomUploadImageSelection } from './custom-upload-image';
+import {
+  CustomUploadImage,
+  CustomUploadImageSelection,
+} from '../custom-upload-image/custom-upload-image';
 
 describe('CustomUploadImage', () => {
   let component: CustomUploadImage;
