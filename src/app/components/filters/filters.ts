@@ -1,4 +1,5 @@
 import { Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -7,13 +8,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { ErrorStateMatcher } from '@angular/material/core';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 // Se crea este error matcher sacado de la documentacion, porque solo se mostraba uno de los mat-error,
 // porque no evaluaba todos los casos (sirty, touche, submitted)
@@ -32,6 +33,7 @@ export class HeroErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatCardModule,
   ],
   templateUrl: './filters.html',
   styleUrl: './filters.scss',

@@ -1,7 +1,10 @@
 <div class="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50">
   <div class="max-w-7xl mx-auto pt-6">
     <!-- Los filtros siempre estan visibles) -->
-    <app-filters (nameFilterApplied)="applyNameFilter($event)" (aliasFilterApplied)="applyAliasFilter($event)"></app-filters>
+    <app-filters
+      (nameFilterApplied)="applyNameFilter($event)"
+      (aliasFilterApplied)="applyAliasFilter($event)"
+    ></app-filters>
 
     <!-- Cuando esta en estado loaging, el spinner solo en aparece en la zona de resultados -->
     @if (heroesResource.isLoading()) {

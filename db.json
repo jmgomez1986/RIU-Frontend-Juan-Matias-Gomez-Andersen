@@ -191,7 +191,13 @@
       "name": "Jean Grey",
       "slug": "jean-grey",
       "alias": "Fénix",
-      "powers": ["Telepatía", "Telequinesis", "Fuerza Fénix", "Conciencia cósmica", "Resurrección"],
+      "powers": [
+        "Telepatía",
+        "Telequinesis",
+        "Fuerza Fénix",
+        "Conciencia cósmica",
+        "Resurrección"
+      ],
       "description": "Mutante poderosa, telépata y telequinética, anfitriona de la fuerza cósmica Fénix.",
       "strength": 7,
       "intelligence": 8,
@@ -257,7 +263,13 @@
       "name": "Barbara Gordon",
       "slug": "barbara-gordon",
       "alias": "Batichica",
-      "powers": ["Artes marciales", "Hackeo", "Sigilo", "Acrobacia", "Habilidades de detective"],
+      "powers": [
+        "Artes marciales",
+        "Hackeo",
+        "Sigilo",
+        "Acrobacia",
+        "Habilidades de detective"
+      ],
       "description": "Brillante luchadora contra el crimen y símbolo de esperanza en Gotham, combinando intelecto y coraje.",
       "strength": 5,
       "intelligence": 9,
