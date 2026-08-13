@@ -1,6 +1,103 @@
 <div class="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50">
   <div class="max-w-7xl mx-auto pt-6">
-    <!-- Loading State -->
+    <!-- Filtros (siempre visibles) -->
+    <div class="grid grid-cols-5 gap-4 items-center mb-5">
+      <div class="text-xl text-blue-500 font-medium mb-2">
+        <span>Filtros</span>
+      </div>
+      <!-- Name Filter -->
+      <div class="items-center gap-3 col-start-2 col-end-4">
+        <div class="flex w-full gap-4">
+          <div class="w-1/6">
+            <mat-label class="block text-center text-m text-blue-gray-300 font-medium mb-2">
+              Nombre a buscar:
+            </mat-label>
+          </div>
+          <div class="w-5/6">
+            <mat-form-field appearance="outline" class="w-full custom-css-height">
+              <input
+                matInput
+                id="heroName"
+                [formControl]="nameFilter"
+                placeholder="Ingrese el nombre del Héroe a buscar"
+                maxlength="21"
+                [errorStateMatcher]="matcher"
+              />
+
+              <!-- Boton para limpiar el input -->
+              @if (nameFilter.value) {
+                <button
+                  matSuffix
+                  matButton
+                  aria-label="Clear"
+                  class="cursor-pointer"
+                  (click)="nameFilter.setValue('')"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+
+              @if (nameFilter.hasError('minlength')) {
+                <mat-error>
+                  El nombre debe tener al menos 3 caracteres para realizar la búsqueda.
+                </mat-error>
+              }
+
+              @if (nameFilter.hasError('maxlength')) {
+                <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <!-- Alias Filter -->
+      <div class="items-center gap-3 col-start-4 col-end-6">
+        <div class="flex w-full gap-4">
+          <div class="w-1/6">
+            <mat-label class="block text-center text-m text-blue-gray-300 font-medium mb-2">
+              Alias a buscar:
+            </mat-label>
+          </div>
+          <div class="w-5/6">
+            <mat-form-field appearance="outline" class="w-full custom-css-height">
+              <input
+                matInput
+                id="heroAlias"
+                [formControl]="aliasFilter"
+                placeholder="Ingrese el alias del Héroe a buscar"
+                maxlength="21"
+                [errorStateMatcher]="matcher"
+              />
+
+              <!-- Boton para limpiar el input -->
+              @if (aliasFilter.value) {
+                <button
+                  matSuffix
+                  matButton
+                  aria-label="Clear"
+                  class="cursor-pointer"
+                  (click)="aliasFilter.setValue('')"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+
+              @if (aliasFilter.hasError('minlength')) {
+                <mat-error>
+                  El alias debe tener al menos 3 caracteres para realizar la búsqueda.
+                </mat-error>
+              }
+
+              @if (aliasFilter.hasError('maxlength')) {
+                <mat-error>El alias debe tener un máximo de 20 caracteres.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State: spinner solo en la zona de resultados -->
     @if (heroesResource.isLoading()) {
       <div class="flex justify-center items-center h-64">
         <mat-spinner diameter="40"></mat-spinner>

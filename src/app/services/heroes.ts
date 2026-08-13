@@ -2,7 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
-import { Hero, HeroesResponsePaginated, NewHeroResponse } from '../interfaces/heroes.interface';
+import {
+  Filters,
+  Hero,
+  HeroesResponsePaginated,
+  NewHeroResponse,
+} from '../interfaces/heroes.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,10 +25,22 @@ export class HeroesService {
       );
   }
   // Devuelve los heroes de la db paginados
-  getHeroPaginated(page: number, itemsPerPage: number): Observable<HeroesResponsePaginated> {
-    const queryParams: HttpParams = new HttpParams()
-      .set('_page', page.toString())
-      .set('_per_page', itemsPerPage.toString());
+  getHeroPaginated(
+    page: number,
+    itemsPerPage: number,
+    query?: Filters,
+  ): Observable<HeroesResponsePaginated> {
+    let queryParams: HttpParams = new HttpParams();
+    if (query) {
+      if (query?.name) {
+        queryParams = queryParams.set('name:contains', query.name);
+      }
+      if (query?.alias) {
+        queryParams = queryParams.set('alias:contains', query.alias);
+      }
+    }
+    queryParams = queryParams.append('_page', page.toString());
+    queryParams = queryParams.append('_per_page', itemsPerPage.toString());
     return this.http.get<HeroesResponsePaginated>(`${this.apiUrl}?${queryParams}`).pipe(
       map((resp) => ({
         ...resp,
