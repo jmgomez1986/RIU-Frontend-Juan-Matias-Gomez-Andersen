@@ -8,10 +8,11 @@ import { MatChipsModule } from '@angular/material/chips';
 
 import { Hero } from '../../../interfaces/heroes.interface';
 import { HeroesService } from '../../../services/heroes';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-hero-grid-card',
-  imports: [MatCardModule, MatButtonModule, MatChipsModule],
+  imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIcon],
   templateUrl: './hero-grid-card.html',
 })
 export class HeroGridCard {
@@ -22,8 +23,6 @@ export class HeroGridCard {
   private router = inject(Router);
 
   deleteHero() {
-    console.log({ heroId: this.hero().id });
-
     Swal.fire({
       title: '¿Está seguro que desea eliminar el héroe',
       text: 'Se eliminará de la base de datos el héroe elegido',
