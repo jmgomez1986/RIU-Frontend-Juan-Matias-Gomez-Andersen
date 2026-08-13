@@ -32,6 +32,12 @@ Para los test unitarios, se usa Vitest
 ng test
 ```
 
+Para ejecutar los test y que se genere el reporte del coverage
+
+```bash
+npm run test:coverage
+```
+
 # Levantar Servidor mockeado con json-server
 
 ```bash
