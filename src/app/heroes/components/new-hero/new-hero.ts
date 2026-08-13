@@ -161,6 +161,7 @@ export default class NewHero {
       }).then((result) => {
         if (result.isConfirmed) {
           const newHero: Hero = { ...this.heroForm.value };
+          newHero.powers = this.reactivePowersWords();
           const heroId = this.hero()?.id ?? '';
           const heroesServiceObservable$: Observable<any> =
             this.mode() === 'create'
