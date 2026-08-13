@@ -94,4 +94,84 @@ describe('HeroesGrid', () => {
 
     expect(refreshSpy).toHaveBeenCalled();
   });
+
+  describe('ngOnInit valueChanges (filtros de busqueda)', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('name: no actualiza si el control es valido pero el query queda 1-2 chars tras el trim', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(2);
+      component.searchName.set('previo');
+
+      component.nameFilter.setValue(' ab ');
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchName()).toBe('previo');
+      expect(component.currentPage()).toBe(2);
+    });
+
+    it('name: actualiza con trim y resetea currentPage a 1 cuando hay >= 3 chars', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(3);
+      component.searchName.set('otro');
+
+      component.nameFilter.setValue('  super  ');
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchName()).toBe('super');
+      expect(component.currentPage()).toBe(1);
+    });
+
+    it('name: no actualiza cuando el form control es invalido (< 3 chars)', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(2);
+      component.searchName.set('previo');
+
+      component.nameFilter.setValue('ab');
+      expect(component.nameFilter.invalid).toBe(true);
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchName()).toBe('previo');
+      expect(component.currentPage()).toBe(2);
+    });
+
+    it('alias: no actualiza si el control es valido pero el query queda 1-2 chars tras el trim', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(2);
+      component.searchAlias.set('previo');
+
+      component.aliasFilter.setValue(' ab ');
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchAlias()).toBe('previo');
+      expect(component.currentPage()).toBe(2);
+    });
+
+    it('alias: actualiza con trim y resetea currentPage a 1 cuando hay >= 3 chars', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(3);
+      component.searchAlias.set('otro');
+
+      component.aliasFilter.setValue('  super  ');
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchAlias()).toBe('super');
+      expect(component.currentPage()).toBe(1);
+    });
+
+    it('alias: no actualiza cuando el form control es invalido (< 3 chars)', async () => {
+      vi.useFakeTimers();
+      component.currentPage.set(2);
+      component.searchAlias.set('previo');
+
+      component.aliasFilter.setValue('ab');
+      expect(component.aliasFilter.invalid).toBe(true);
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(component.searchAlias()).toBe('previo');
+      expect(component.currentPage()).toBe(2);
+    });
+  });
 });

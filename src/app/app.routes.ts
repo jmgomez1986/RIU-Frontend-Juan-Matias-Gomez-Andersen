@@ -19,6 +19,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/edit-hero-page/edit-hero-page'),
       },
       {
+        path: 'view-hero/:heroId',
+        loadComponent: () => import('./pages/edit-hero-page/edit-hero-page'),
+      },
+      {
         path: '**',
         redirectTo: 'heroes',
         pathMatch: 'full',
