@@ -57,6 +57,7 @@ export default class NewHero {
   readonly heroesService = inject(HeroesService);
   readonly heroesUtilsService = inject(HeroesUtilsService);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
 
   heroForm: FormGroup = new FormGroup({});
   heroeCategories: HeroeCategory[] = [
@@ -65,8 +66,12 @@ export default class NewHero {
   ];
   readonly reactivePowersWords = signal<string[]>([]);
 
-  constructor(private fb: FormBuilder) {
-    // Se obtiene el valor de mode del state del roter
+  constructor() {
+    this.getRouterState();
+  }
+
+  getRouterState() {
+    // Se obtiene el valor de mode del state del router
     const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
     this.mode.set(state?.mode ?? 'create');
     this.buildHeroForm();
