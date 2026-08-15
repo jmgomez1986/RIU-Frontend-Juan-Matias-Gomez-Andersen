@@ -1,29 +1,14 @@
 import { Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  FormGroupDirective,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { ErrorStateMatcher } from '@angular/material/core';
-
-// Se crea este error matcher sacado de la documentacion, porque solo se mostraba uno de los mat-error,
-// porque no evaluaba todos los casos (sirty, touche, submitted)
-export class HeroErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = !!(form && form.submitted);
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+import { HeroErrorStateMatcher } from '../../shared/error-state-matcher';
 
 @Component({
   selector: 'app-filters',

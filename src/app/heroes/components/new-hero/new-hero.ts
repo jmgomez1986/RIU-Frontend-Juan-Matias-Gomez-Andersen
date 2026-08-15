@@ -3,17 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,20 +23,13 @@ import {
 } from '../../../components/custom-upload-image/custom-upload-image';
 import { HeroesUtilsService } from '../../../services/heroe-utils';
 import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
+import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
 
 interface HeroeCategory {
   value: string;
   viewValue: string;
 }
 
-// Se crea este error matcher sacado de la documentacion, porque solo se mostraba uno de los mat-error,
-// porque no evaluaba todos los casos (sirty, touche, submitted)
-export class HeroErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = !!(form && form.submitted);
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 @Component({
   selector: 'app-new-hero',
   imports: [
