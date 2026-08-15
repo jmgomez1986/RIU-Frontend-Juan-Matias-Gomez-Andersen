@@ -17,7 +17,7 @@ export default class EditHeroPage {
   private router = inject(Router);
 
   heroeResource = resource({
-    params: (): any => ({
+    params: (): { heroId: string } => ({
       heroId: this.heroId(),
     }),
     loader: async () => {
