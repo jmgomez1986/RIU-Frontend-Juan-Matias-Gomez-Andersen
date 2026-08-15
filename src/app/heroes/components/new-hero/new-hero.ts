@@ -23,6 +23,7 @@ import {
 import { HeroesUtilsService } from '../../../services/heroe-utils';
 import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
 import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
+import { Mode } from '../../../interfaces/shared.interface';
 
 interface HeroeCategory {
   value: string;
@@ -50,7 +51,7 @@ export default class NewHero {
   matcher = new HeroErrorStateMatcher();
   // Signals
   hero = input<Hero>();
-  mode = signal<string>('create');
+  mode = input<Mode>('create');
   // Services
   readonly heroesService = inject(HeroesService);
   readonly heroesUtilsService = inject(HeroesUtilsService);
@@ -65,13 +66,6 @@ export default class NewHero {
   readonly reactivePowersWords = signal<string[]>([]);
 
   constructor() {
-    this.getRouterState();
-  }
-
-  getRouterState() {
-    // Se obtiene el valor de mode del state del router
-    const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
-    this.mode.set(state?.mode ?? 'create');
     this.buildHeroForm();
     effect(() => {
       const heroData = this.hero();

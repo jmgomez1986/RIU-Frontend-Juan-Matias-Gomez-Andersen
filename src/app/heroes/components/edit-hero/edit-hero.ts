@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import NewHero from '../new-hero/new-hero';
 import { Hero } from '../../../interfaces/heroes.interface';
+import { Mode } from '../../../interfaces/shared.interface';
 
 @Component({
   selector: 'app-edit-hero',
@@ -9,4 +10,5 @@ import { Hero } from '../../../interfaces/heroes.interface';
 })
 export default class EditHero {
   hero = input<Hero>();
+  mode = input<Mode>('edit');
 }

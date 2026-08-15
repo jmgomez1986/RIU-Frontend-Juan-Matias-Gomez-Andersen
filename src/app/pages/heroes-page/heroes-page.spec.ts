@@ -48,7 +48,7 @@ describe('HeroesPage', () => {
     // Se crea un espia de router.navigate para verificar que se llame con el argumento correcto
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component.navigateToNewHero();
-    expect(navigateSpy).toHaveBeenCalledWith(['/new-hero'], { state: { mode: 'create' } });
+    expect(navigateSpy).toHaveBeenCalledWith(['/new-hero']);
   });
 
   it('should call router.navigate with "/new-hero" when the button is clicked', () => {
@@ -62,6 +62,6 @@ describe('HeroesPage', () => {
     // Dispara el evento (click) bindeado a navigateToNewHero().
     button.triggerEventHandler('click', null);
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/new-hero'], { state: { mode: 'create' } });
+    expect(navigateSpy).toHaveBeenCalledWith(['/new-hero']);
   });
 });

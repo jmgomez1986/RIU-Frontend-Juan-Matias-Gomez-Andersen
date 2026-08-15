@@ -13,14 +13,17 @@ export const routes: Routes = [
       {
         path: 'new-hero',
         loadComponent: () => import('./pages/new-hero-page/new-hero-page'),
+        data: { mode: 'create' },
       },
       {
         path: 'edit-hero/:heroId',
         loadComponent: () => import('./pages/edit-hero-page/edit-hero-page'),
+        data: { mode: 'edit' },
       },
       {
         path: 'view-hero/:heroId',
         loadComponent: () => import('./pages/edit-hero-page/edit-hero-page'),
+        data: { mode: 'view' },
       },
       {
         path: '**',

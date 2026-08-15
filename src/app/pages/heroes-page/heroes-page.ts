@@ -14,6 +14,6 @@ export default class HeroesPage {
   private router = inject(Router);
 
   navigateToNewHero() {
-    this.router.navigate(['/new-hero'], { state: { mode: 'create' } });
+    this.router.navigate(['/new-hero']);
   }
 }

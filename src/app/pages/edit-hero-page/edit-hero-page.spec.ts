@@ -44,4 +44,18 @@ describe('EditHeroPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show "Ver Héroe" heading when mode is "view"', async () => {
+    fixture.componentRef.setInput('mode', 'view');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Ver Héroe');
+  });
+
+  it('should show "Editar Héroe" heading when mode is "edit"', async () => {
+    fixture.componentRef.setInput('mode', 'edit');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Editar Héroe');
+  });
 });

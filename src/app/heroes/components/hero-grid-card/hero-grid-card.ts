@@ -57,9 +57,9 @@ export class HeroGridCard {
   }
 
   editHero() {
-    this.router.navigate([`/edit-hero/${this.hero().id}`], { state: { mode: 'edit' } });
+    this.router.navigate([`/edit-hero/${this.hero().id}`]);
   }
   viewHero() {
-    this.router.navigate([`/view-hero/${this.hero().id}`], { state: { mode: 'view' } });
+    this.router.navigate([`/view-hero/${this.hero().id}`]);
   }
 }
