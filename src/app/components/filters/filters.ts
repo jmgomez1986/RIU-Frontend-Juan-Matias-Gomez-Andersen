@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -32,8 +32,8 @@ export class Filters implements OnInit {
   readonly aliasFilter = new FormControl('', [Validators.minLength(3), Validators.maxLength(20)]);
 
   // Emite hacia el padre el query ya normalizado (trim + >= 3 caracteres o vacio)
-  @Output() nameFilterApplied = new EventEmitter<string>();
-  @Output() aliasFilterApplied = new EventEmitter<string>();
+  nameFilterApplied = output<string>();
+  aliasFilterApplied = output<string>();
 
   ngOnInit(): void {
     this.nameFilter.valueChanges
