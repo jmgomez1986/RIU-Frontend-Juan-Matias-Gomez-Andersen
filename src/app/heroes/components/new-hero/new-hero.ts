@@ -25,7 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 import { HeroesService } from '../../../services/heroes';
-import { Hero } from '../../../interfaces/heroes.interface';
+import { Hero, NewHeroResponse } from '../../../interfaces/heroes.interface';
 import {
   CustomUploadImage,
   CustomUploadImageSelection,
@@ -163,12 +163,12 @@ export default class NewHero {
           const newHero: Hero = { ...this.heroForm.value };
           newHero.powers = this.reactivePowersWords();
           const heroId = this.hero()?.id ?? '';
-          const heroesServiceObservable$: Observable<any> =
+          const heroesServiceObservable$: Observable<NewHeroResponse | Hero> =
             this.mode() === 'create'
               ? this.heroesService.addNewHero(newHero)
               : this.heroesService.editHero(heroId, newHero);
           heroesServiceObservable$.subscribe({
-            next: (resp) => {
+            next: () => {
               Swal.fire({
                 title: 'Se guardó con éxito',
                 text:
