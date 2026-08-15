@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import NewHero from '../../heroes/components/new-hero/new-hero';
 
 @Component({

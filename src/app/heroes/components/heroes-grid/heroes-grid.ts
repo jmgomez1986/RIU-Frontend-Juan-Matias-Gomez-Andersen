@@ -32,9 +32,6 @@ import { Filters } from '../../../components/filters/filters';
   templateUrl: './heroes-grid.html',
 })
 export class HeroesGrid {
-  // Inyeccion de la referencia de destruccion para la desubcripcion
-  private destroyRef = inject(DestroyRef);
-
   // Services
   readonly heroesService = inject(HeroesService);
   readonly heroesUtilsService = inject(HeroesUtilsService);

@@ -1,5 +1,4 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -35,7 +34,6 @@ interface HeroeCategory {
   imports: [
     CustomUploadImage,
     TransformTextUppercase,
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -163,7 +161,7 @@ export default class NewHero {
                 text:
                   this.mode() === 'create'
                     ? 'Tú nuevo Héroe ha sido creado.'
-                    : 'El Héeroe ha sido editado',
+                    : 'El Héroe ha sido editado',
                 icon: 'success',
               });
               this.heroesUtilsService.refreshLoad();

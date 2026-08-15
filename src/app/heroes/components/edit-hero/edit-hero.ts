@@ -1,4 +1,4 @@
-import { Component, effect, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import NewHero from '../new-hero/new-hero';
 import { Hero } from '../../../interfaces/heroes.interface';
 

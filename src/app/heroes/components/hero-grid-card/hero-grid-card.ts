@@ -38,7 +38,7 @@ export class HeroGridCard {
           next: (resp) => {
             Swal.fire({
               title: 'Se eliminó el héroe con éxito',
-              text: 'Tú nuevo Héroe ha sido creado.',
+              text: 'El Héroe ha sido eliminado.',
               icon: 'success',
             });
             this.heroDeleted.emit();
