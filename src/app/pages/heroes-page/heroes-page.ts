@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { HeroesGrid } from '../../heroes/components/heroes-grid/heroes-grid';
 
 @Component({
   selector: 'app-heroes-page',
-  imports: [HeroesGrid, MatButtonModule, RouterOutlet],
+  imports: [HeroesGrid, MatButtonModule],
   templateUrl: './heroes-page.html',
 })
 
