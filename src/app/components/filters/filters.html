@@ -18,7 +18,7 @@
               id="heroName"
               [formControl]="nameFilter"
               placeholder="Ingrese el nombre del Héroe a buscar"
-              maxlength="21"
+              (input)="onTextInput($event, nameFilter)"
               [errorStateMatcher]="matcher"
             />
 
@@ -44,6 +44,10 @@
             @if (nameFilter.hasError('maxlength')) {
               <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
             }
+
+            @if (nameFilter.value?.length === FILTER_MAX_LENGTH) {
+              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
+            }
           </mat-form-field>
         </div>
       </div>
@@ -63,7 +67,7 @@
               id="heroAlias"
               [formControl]="aliasFilter"
               placeholder="Ingrese el alias del Héroe a buscar"
-              maxlength="21"
+              (input)="onTextInput($event, aliasFilter)"
               [errorStateMatcher]="matcher"
             />
 
@@ -88,6 +92,10 @@
 
             @if (aliasFilter.hasError('maxlength')) {
               <mat-error>El alias debe tener un máximo de 20 caracteres.</mat-error>
+            }
+
+            @if (aliasFilter.value?.length === FILTER_MAX_LENGTH) {
+              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
             }
           </mat-form-field>
         </div>

@@ -26,6 +26,9 @@ import { TransformTextUppercase } from '../../../directives/transform-text-upper
 import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
 import { Mode } from '../../../interfaces/shared.interface';
 
+/** Nombres de los campos de texto con límite de caracteres. */
+type TextFieldName = 'name' | 'alias' | 'universe' | 'team' | 'description';
+
 interface HeroeCategory {
   value: string;
   viewValue: string;
@@ -65,6 +68,14 @@ export default class NewHero {
     { value: 'Hero', viewValue: 'Héroe' },
     { value: 'Villain', viewValue: 'Villano' },
   ];
+  /** Máximos de caracteres por campo de texto (única fuente de verdad para validador y template). */
+  readonly MAX_LENGTHS: Record<TextFieldName, number> = {
+    name: 20,
+    alias: 20,
+    universe: 10,
+    team: 20,
+    description: 150,
+  };
   readonly reactivePowersWords = signal<string[]>([]);
 
   constructor() {
@@ -84,13 +95,28 @@ export default class NewHero {
 
   buildHeroForm() {
     this.heroForm = this.fb.group({
-      name: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
-      alias: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
+      name: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.name)] },
+      ],
+      alias: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.alias)] },
+      ],
       status: ['Active'],
       category: ['Hero', { validators: [Validators.required, Validators.maxLength(10)] }],
-      universe: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
-      team: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
-      description: ['', { validators: [Validators.required, Validators.maxLength(150)] }],
+      universe: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.universe)] },
+      ],
+      team: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.team)] },
+      ],
+      description: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.description)] },
+      ],
       powers: [],
       image: ['', { validators: [Validators.required] }],
     });
@@ -182,6 +208,20 @@ export default class NewHero {
 
   cancelSubmit() {
     this.router.navigate(['/heroes']);
+  }
+
+  /**
+   * Limita la escritura de un campo de texto a maxLength + 1 caracteres (ver
+   * HeroesUtilsService.enforceMaxLength). Reemplaza al atributo nativo maxlength:
+   * se deja escribir un caracter de más para que el validador dispare el error,
+   * el formulario quede inválido y el botón Guardar se deshabilite.
+   */
+  onTextInput(event: Event, controlName: TextFieldName): void {
+    this.heroesUtilsService.enforceMaxLength(
+      event,
+      this.heroForm.get(controlName),
+      this.MAX_LENGTHS[controlName],
+    );
   }
 
   /** Se ejecuta cuando el componente de carga de imagen emite una selección. */

@@ -93,4 +93,52 @@ describe('Filters', () => {
       expect(emit).not.toHaveBeenCalled();
     });
   });
+
+  describe('límite de caracteres (onTextInput)', () => {
+    // Simula un evento 'input' con un target mínimamente tipado (sin 'any').
+    const createInputEvent = (value: string): {
+      event: Event;
+      target: { value: string; selectionStart: number; setSelectionRange: ReturnType<typeof vi.fn> };
+    } => {
+      const target = { value, selectionStart: value.length, setSelectionRange: vi.fn() };
+      const event = new Event('input');
+      Object.defineProperty(event, 'target', { value: target });
+      return { event, target };
+    };
+
+    it('recorta el nameFilter a máximo + 1 (21) y lo deja inválido', () => {
+      const { event, target } = createInputEvent('x'.repeat(30));
+
+      component.onTextInput(event, component.nameFilter);
+
+      expect(target.value).toBe('x'.repeat(21));
+      expect(component.nameFilter.value).toBe('x'.repeat(21));
+      expect(component.nameFilter.hasError('maxlength')).toBe(true);
+    });
+
+    it('muestra el mat-hint solo cuando el filtro llega al máximo (20)', () => {
+      component.nameFilter.setValue('x'.repeat(20));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('Límite de caracteres alcanzado');
+
+      component.nameFilter.setValue('x'.repeat(19));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).not.toContain('Límite de caracteres alcanzado');
+    });
+
+    it('integración: no tiene maxlength nativo y recorta el DOM al tipear', () => {
+      fixture.detectChanges();
+      const input = fixture.nativeElement.querySelector('#heroName') as HTMLInputElement;
+      expect(input.getAttribute('maxlength')).toBeNull();
+
+      input.value = 'y'.repeat(25);
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(input.value.length).toBe(21);
+      expect(component.nameFilter.value?.length).toBe(21);
+    });
+  });
 });

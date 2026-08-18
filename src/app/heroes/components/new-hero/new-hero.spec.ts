@@ -241,7 +241,7 @@ describe('NewHero', () => {
       expect(text).toContain('El alias debe tener un máximo de 20 caracteres.');
       expect(text).toContain('El universo debe tener un máximo de 10 caracteres.');
       expect(text).toContain('El equipo del héroe debe tener un máximo de 20 caracteres.');
-      expect(text).toContain('El nombre debe tener un máximo de 150 caracteres.');
+      expect(text).toContain('La descripción del Héroe debe tener un máximo de 150 caracteres.');
     });
 
     it('no muestra mat-error cuando el formulario es válido', () => {
@@ -251,6 +251,83 @@ describe('NewHero', () => {
 
       const errors = fixture.nativeElement.querySelectorAll('mat-error');
       expect(errors.length).toBe(0);
+    });
+  });
+
+  describe('límite de caracteres con onTextInput', () => {
+    // Simula un evento 'input' con un target mínimamente tipado (sin 'any').
+    const createInputEvent = (value: string, selectionStart = value.length): {
+      event: Event;
+      target: { value: string; selectionStart: number; setSelectionRange: ReturnType<typeof vi.fn> };
+    } => {
+      const target = { value, selectionStart, setSelectionRange: vi.fn() };
+      const event = new Event('input');
+      Object.defineProperty(event, 'target', { value: target });
+      return { event, target };
+    };
+
+    it('recorta el texto al máximo + 1 y deja el control inválido (maxlength)', () => {
+      const { event, target } = createInputEvent('x'.repeat(25));
+
+      component.onTextInput(event, 'alias');
+
+      expect(target.value).toBe('x'.repeat(21));
+      expect(component.heroForm.get('alias')?.value).toBe('x'.repeat(21));
+      expect(component.heroForm.get('alias')?.hasError('maxlength')).toBe(true);
+    });
+
+    it('no recorta cuando el texto está dentro de máximo + 1', () => {
+      const { event, target } = createInputEvent('x'.repeat(21));
+
+      component.onTextInput(event, 'alias');
+
+      expect(target.value).toBe('x'.repeat(21));
+    });
+
+    it('muestra el mat-hint solo cuando el campo llega al máximo', () => {
+      component.heroForm.get('alias')?.setValue('x'.repeat(20));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('Límite de caracteres alcanzado');
+    });
+
+    it('no muestra el mat-hint por debajo del máximo ni al superarlo', () => {
+      component.heroForm.get('alias')?.setValue('x'.repeat(19));
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).not.toContain('Límite de caracteres alcanzado');
+
+      component.heroForm.get('alias')?.setValue('x'.repeat(21));
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).not.toContain('Límite de caracteres alcanzado');
+    });
+
+    it('integración: el input no tiene maxlength nativo y recorta el DOM al tipear', () => {
+      fixture.detectChanges();
+      const aliasInput = fixture.nativeElement.querySelector('#heroAlias') as HTMLInputElement;
+      expect(aliasInput.getAttribute('maxlength')).toBeNull();
+
+      aliasInput.value = 'z'.repeat(30);
+      aliasInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(aliasInput.value.length).toBe(21);
+      expect(component.heroForm.get('alias')?.value?.length).toBe(21);
+    });
+
+    it('integración: con el alias en 21 el formulario queda inválido y Guardar se deshabilita', () => {
+      fillValidForm();
+      fixture.detectChanges();
+
+      const aliasInput = fixture.nativeElement.querySelector('#heroAlias') as HTMLInputElement;
+      aliasInput.value = 'x'.repeat(21);
+      aliasInput.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      expect(component.heroForm.valid).toBe(false);
+      const saveButton = fixture.debugElement
+        .queryAll(By.css('button'))
+        .find((button) => button.nativeElement.textContent?.trim() === 'Guardar');
+      expect(saveButton?.nativeElement.disabled).toBe(true);
     });
   });
 
