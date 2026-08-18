@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
+import { provideRouter, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
 
 import EditHeroPage from './edit-hero-page';
-import { Hero } from '../../interfaces/heroes.interface';
 import { HeroesService } from '../../services/heroes';
+import { Hero } from '../../interfaces/heroes.interface';
+import { Mode } from '../../interfaces/shared.interface';
 
+// Héroe de prueba reutilizable.
 const mockHero: Hero = {
   id: '1',
   name: 'Clark Kent',
@@ -19,26 +22,39 @@ const mockHero: Hero = {
   universe: 'DC',
 };
 
+// Factory del servicio: cada método es un vi.fn() que emite al instante.
+const createHeroesServiceMock = () => ({
+  getHeroById: vi.fn().mockReturnValue(of(mockHero)),
+});
+
 describe('EditHeroPage', () => {
   let component: EditHeroPage;
   let fixture: ComponentFixture<EditHeroPage>;
+  let router: Router;
+  let heroesService!: ReturnType<typeof createHeroesServiceMock>;
+
+  const setMode = (mode: Mode) => fixture.componentRef.setInput('mode', mode);
 
   beforeEach(async () => {
+    heroesService = createHeroesServiceMock();
+
     await TestBed.configureTestingModule({
       imports: [EditHeroPage],
       providers: [
         provideRouter([]),
-        {
-          provide: HeroesService,
-          useValue: { getHeroById: () => of(mockHero) },
-        },
+        { provide: HeroesService, useValue: heroesService },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditHeroPage);
-    fixture.componentRef.setInput('heroId', '1');
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    fixture.componentRef.setInput('heroId', '1');
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -46,16 +62,36 @@ describe('EditHeroPage', () => {
   });
 
   it('should show "Ver Héroe" heading when mode is "view"', async () => {
-    fixture.componentRef.setInput('mode', 'view');
+    setMode('view');
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Ver Héroe');
   });
 
   it('should show "Editar Héroe" heading when mode is "edit"', async () => {
-    fixture.componentRef.setInput('mode', 'edit');
+    setMode('edit');
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Editar Héroe');
+  });
+
+  // El resource carga exitosamente y devuelve el héroe por su ID
+  it('resource carga y devuelve el héroe', async () => {
+    await fixture.whenStable();
+    expect(heroesService.getHeroById).toHaveBeenCalledWith('1');
+    expect(component.heroeResource.value()).toEqual(mockHero);
+    expect(component.heroeResource.hasValue()).toBe(true);
+  });
+
+  // El resource muestra error y el template avisa cuando falla
+  it('resource muestra error cuando el servicio falla', async () => {
+    heroesService.getHeroById.mockReturnValue(throwError(() => new Error('heroe no encontrado')));
+    fixture.componentRef.setInput('heroId', '2');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.heroeResource.error()).toBeDefined();
+    expect(component.heroeResource.hasValue()).toBe(false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('No se pudo cargar el héroe.');
   });
 });
