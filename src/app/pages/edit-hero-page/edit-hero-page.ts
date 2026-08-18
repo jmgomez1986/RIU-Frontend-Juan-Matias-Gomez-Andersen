@@ -11,7 +11,7 @@ import { Mode } from '../../interfaces/shared.interface';
 })
 export default class EditHeroPage {
   heroId = input.required<string>();
-  /** El modo ('edit' | 'view') es enlazad por el router (withComponentInputBinding)
+  /** El modo ('edit' | 'view') es enlazado por el router (withComponentInputBinding)
    * desde el data de la ruta. */
   mode = input<Mode>('edit');
   // Services
