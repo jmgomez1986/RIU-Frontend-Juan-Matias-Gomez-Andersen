@@ -113,6 +113,10 @@ El mensaje de éxito después de eliminar un héroe dice que fue "creado". Adem�
 
 - C3: se reempleaza tipo any en new-hero.ts donde se define a que observable llamar, si a addNewHero o editHero
 
+Con respecto al punto [I14], fue desición mia dado que con el Validator del formulario si bien marcaba el error, dejaba seguir escribiendo infinitamente, por eso agregue la propiedad nativa del input, para que se le permita escribir al usuario el maximo+1, asi le "bloqueaba" seguir escribiendo y aparecia el mat-error, porque si dejaba la propiedad del input, el Validator nunca se manifestaba.
+Recordando el ulttimo proyecto en el cual participe, sobre este mismo tema, el diseñador me explico y acordamos una forma de avisarle al usuario cuando ya llego al limite, y si sigue escribiendo recien ahi mostrar el error y "cortarle" en forma manual mediante (input) lo que escribiera hasta el maximo. Dado que me decia que es mejor avisarle al usuario antes de que cometa el error y asi evitarlo.
+Asique refactorice esa validacion para replicar lo que habia hech y dejar algo mas robusto. Adicionalmente, se agregaron los test correspondientes.
+
 # Test de los archivos especificados en I14 y C2
 
 ## 1. new-hero.spec.ts - Componente `NewHero`
