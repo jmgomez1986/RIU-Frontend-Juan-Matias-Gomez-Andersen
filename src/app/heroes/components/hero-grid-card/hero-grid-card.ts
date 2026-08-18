@@ -1,6 +1,7 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +22,7 @@ export class HeroGridCard {
   // Services
   readonly heroesService = inject(HeroesService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   deleteHero() {
     Swal.fire({
@@ -34,7 +36,10 @@ export class HeroGridCard {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.heroesService.deleteHero(this.hero().id).subscribe({
+        this.heroesService
+          .deleteHero(this.hero().id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
           next: (resp) => {
             Swal.fire({
               title: 'Se eliminó el héroe con éxito',

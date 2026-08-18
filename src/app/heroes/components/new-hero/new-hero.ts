@@ -1,6 +1,7 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -57,6 +58,7 @@ export default class NewHero {
   readonly heroesUtilsService = inject(HeroesUtilsService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
   heroForm: FormGroup = new FormGroup({});
   heroeCategories: HeroeCategory[] = [
@@ -148,7 +150,7 @@ export default class NewHero {
             this.mode() === 'create'
               ? this.heroesService.addNewHero(newHero)
               : this.heroesService.editHero(heroId, newHero);
-          heroesServiceObservable$.subscribe({
+          heroesServiceObservable$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
               Swal.fire({
                 title: 'Se guardó con éxito',
