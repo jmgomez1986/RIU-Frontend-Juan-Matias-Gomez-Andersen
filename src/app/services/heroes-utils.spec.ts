@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl, Validators } from '@angular/forms';
 
-import { HeroesUtilsService } from './heroe-utils';
+import { HeroesUtilsService } from './heroes-utils';
 
 describe('HeroeUtils', () => {
   let service: HeroesUtilsService;
@@ -26,9 +26,16 @@ describe('HeroeUtils', () => {
 
   describe('enforceMaxLength', () => {
     // Simula un evento 'input' con un target mínimamente tipado (sin 'any').
-    const createInputEvent = (value: string, selectionStart = value.length): {
+    const createInputEvent = (
+      value: string,
+      selectionStart = value.length,
+    ): {
       event: Event;
-      target: { value: string; selectionStart: number; setSelectionRange: ReturnType<typeof vi.fn> };
+      target: {
+        value: string;
+        selectionStart: number;
+        setSelectionRange: ReturnType<typeof vi.fn>;
+      };
     } => {
       const target = { value, selectionStart, setSelectionRange: vi.fn() };
       const event = new Event('input');

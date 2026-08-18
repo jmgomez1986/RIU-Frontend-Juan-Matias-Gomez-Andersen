@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { HeroErrorStateMatcher } from '../../shared/error-state-matcher';
-import { HeroesUtilsService } from '../../services/heroe-utils';
+import { HeroesUtilsService } from '../../services/heroes-utils';
 
 @Component({
   selector: 'app-filters',
@@ -32,8 +32,14 @@ export class Filters implements OnInit {
   private destroyRef = inject(DestroyRef);
   private readonly heroesUtilsService = inject(HeroesUtilsService);
   // FormControl para el filtrado por nombre. Minimo 3 caracteres para disparar la busqueda.
-  readonly nameFilter = new FormControl('', [Validators.minLength(3), Validators.maxLength(this.FILTER_MAX_LENGTH)]);
-  readonly aliasFilter = new FormControl('', [Validators.minLength(3), Validators.maxLength(this.FILTER_MAX_LENGTH)]);
+  readonly nameFilter = new FormControl('', [
+    Validators.minLength(3),
+    Validators.maxLength(this.FILTER_MAX_LENGTH),
+  ]);
+  readonly aliasFilter = new FormControl('', [
+    Validators.minLength(3),
+    Validators.maxLength(this.FILTER_MAX_LENGTH),
+  ]);
 
   // Emite hacia el padre el query ya normalizado (trim + >= 3 caracteres o vacio)
   nameFilterApplied = output<string>();

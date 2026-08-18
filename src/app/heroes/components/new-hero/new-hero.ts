@@ -21,7 +21,7 @@ import {
   CustomUploadImage,
   CustomUploadImageSelection,
 } from '../../../components/custom-upload-image/custom-upload-image';
-import { HeroesUtilsService } from '../../../services/heroe-utils';
+import { HeroesUtilsService } from '../../../services/heroes-utils';
 import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
 import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
 import { Mode } from '../../../interfaces/shared.interface';

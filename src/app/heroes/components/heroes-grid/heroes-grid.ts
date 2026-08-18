@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HeroesGridResourceParams } from '../../../interfaces/heroes.interface';
 import { HeroesService } from '../../../services/heroes';
 import { HeroGridCard } from '../hero-grid-card/hero-grid-card';
-import { HeroesUtilsService } from '../../../services/heroe-utils';
+import { HeroesUtilsService } from '../../../services/heroes-utils';
 import { Filters } from '../../../components/filters/filters';
 
 @Component({

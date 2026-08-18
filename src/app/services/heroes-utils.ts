@@ -22,8 +22,6 @@ export class HeroesUtilsService {
 
   /**
    * Limita un input/textarea a maxLength + 1 caracteres sin usar el atributo nativo maxlength.
-   *
-   * Comportamiento (Opción B):
    * - Se deja escribir hasta maxLength + 1: al llegar ahí, Validators.maxLength dispara el error
    *   y el FormControl (y por ende el FormGroup) queda inválido.
    * - Cualquier caracter por encima de ese tope se recorta con slice(), dando la sensación de que
