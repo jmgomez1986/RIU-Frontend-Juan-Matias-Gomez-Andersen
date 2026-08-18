@@ -1,19 +1,10 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Swal from 'sweetalert2';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,33 +16,29 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 import { HeroesService } from '../../../services/heroes';
-import { Hero } from '../../../interfaces/heroes.interface';
+import { Hero, NewHeroResponse } from '../../../interfaces/heroes.interface';
 import {
   CustomUploadImage,
   CustomUploadImageSelection,
 } from '../../../components/custom-upload-image/custom-upload-image';
 import { HeroesUtilsService } from '../../../services/heroe-utils';
 import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
+import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
+import { Mode } from '../../../interfaces/shared.interface';
+
+/** Nombres de los campos de texto con límite de caracteres. */
+type TextFieldName = 'name' | 'alias' | 'universe' | 'team' | 'description';
 
 interface HeroeCategory {
   value: string;
   viewValue: string;
 }
 
-// Se crea este error matcher sacado de la documentacion, porque solo se mostraba uno de los mat-error,
-// porque no evaluaba todos los casos (sirty, touche, submitted)
-export class HeroErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = !!(form && form.submitted);
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 @Component({
   selector: 'app-new-hero',
   imports: [
     CustomUploadImage,
     TransformTextUppercase,
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -68,23 +55,30 @@ export default class NewHero {
   matcher = new HeroErrorStateMatcher();
   // Signals
   hero = input<Hero>();
-  mode = signal<string>('create');
+  mode = input<Mode>('create');
   // Services
   readonly heroesService = inject(HeroesService);
   readonly heroesUtilsService = inject(HeroesUtilsService);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
   heroForm: FormGroup = new FormGroup({});
   heroeCategories: HeroeCategory[] = [
     { value: 'Hero', viewValue: 'Héroe' },
     { value: 'Villain', viewValue: 'Villano' },
   ];
+  /** Máximos de caracteres por campo de texto (única fuente de verdad para validador y template). */
+  readonly MAX_LENGTHS: Record<TextFieldName, number> = {
+    name: 20,
+    alias: 20,
+    universe: 10,
+    team: 20,
+    description: 150,
+  };
   readonly reactivePowersWords = signal<string[]>([]);
 
-  constructor(private fb: FormBuilder) {
-    // Se obtiene el valor de mode del state del roter
-    const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
-    this.mode.set(state?.mode ?? 'create');
+  constructor() {
     this.buildHeroForm();
     effect(() => {
       const heroData = this.hero();
@@ -101,13 +95,28 @@ export default class NewHero {
 
   buildHeroForm() {
     this.heroForm = this.fb.group({
-      name: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
-      alias: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
+      name: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.name)] },
+      ],
+      alias: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.alias)] },
+      ],
       status: ['Active'],
       category: ['Hero', { validators: [Validators.required, Validators.maxLength(10)] }],
-      universe: ['', { validators: [Validators.required, Validators.maxLength(10)] }],
-      team: ['', { validators: [Validators.required, Validators.maxLength(20)] }],
-      description: ['', { validators: [Validators.required, Validators.maxLength(150)] }],
+      universe: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.universe)] },
+      ],
+      team: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.team)] },
+      ],
+      description: [
+        '',
+        { validators: [Validators.required, Validators.maxLength(this.MAX_LENGTHS.description)] },
+      ],
       powers: [],
       image: ['', { validators: [Validators.required] }],
     });
@@ -163,18 +172,18 @@ export default class NewHero {
           const newHero: Hero = { ...this.heroForm.value };
           newHero.powers = this.reactivePowersWords();
           const heroId = this.hero()?.id ?? '';
-          const heroesServiceObservable$: Observable<any> =
+          const heroesServiceObservable$: Observable<NewHeroResponse | Hero> =
             this.mode() === 'create'
               ? this.heroesService.addNewHero(newHero)
               : this.heroesService.editHero(heroId, newHero);
-          heroesServiceObservable$.subscribe({
-            next: (resp) => {
+          heroesServiceObservable$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: () => {
               Swal.fire({
                 title: 'Se guardó con éxito',
                 text:
                   this.mode() === 'create'
                     ? 'Tú nuevo Héroe ha sido creado.'
-                    : 'El Héeroe ha sido editado',
+                    : 'El Héroe ha sido editado',
                 icon: 'success',
               });
               this.heroesUtilsService.refreshLoad();
@@ -199,6 +208,20 @@ export default class NewHero {
 
   cancelSubmit() {
     this.router.navigate(['/heroes']);
+  }
+
+  /**
+   * Limita la escritura de un campo de texto a maxLength + 1 caracteres (ver
+   * HeroesUtilsService.enforceMaxLength). Reemplaza al atributo nativo maxlength:
+   * se deja escribir un caracter de más para que el validador dispare el error,
+   * el formulario quede inválido y el botón Guardar se deshabilite.
+   */
+  onTextInput(event: Event, controlName: TextFieldName): void {
+    this.heroesUtilsService.enforceMaxLength(
+      event,
+      this.heroForm.get(controlName),
+      this.MAX_LENGTHS[controlName],
+    );
   }
 
   /** Se ejecuta cuando el componente de carga de imagen emite una selección. */

@@ -20,14 +20,16 @@
               id="heroName"
               formControlName="name"
               placeholder="Ingrese el nombre del Héroe"
-              maxlength="21"
+              (input)="onTextInput($event, 'name')"
               [errorStateMatcher]="matcher"
             />
 
             @if (heroForm.get('name')?.hasError('required')) {
               <mat-error>El nombre es obligatorio</mat-error>
             } @else if (heroForm.get('name')?.hasError('maxlength')) {
-              <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
+              <mat-error>El nombre debe tener un máximo de {{ MAX_LENGTHS['name'] }} caracteres.</mat-error>
+            } @else if (heroForm.get('name')?.value?.length === MAX_LENGTHS['name']) {
+              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
             }
           </mat-form-field>
         </div>
@@ -67,14 +69,16 @@
               id="heroAlias"
               formControlName="alias"
               placeholder="Ingrese el alias del Héroe"
-              maxlength="21"
+              (input)="onTextInput($event, 'alias')"
               [errorStateMatcher]="matcher"
             />
 
             @if (heroForm.get('alias')?.hasError('required')) {
               <mat-error>El alias es obligatorio</mat-error>
             } @else if (heroForm.get('alias')?.hasError('maxlength')) {
-              <mat-error>El alias debe tener un máximo de 20 caracteres.</mat-error>
+              <mat-error>El alias debe tener un máximo de {{ MAX_LENGTHS['alias'] }} caracteres.</mat-error>
+            } @else if (heroForm.get('alias')?.value?.length === MAX_LENGTHS['alias']) {
+              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
             }
           </mat-form-field>
         </div>
@@ -87,14 +91,16 @@
               id="heroUniverse"
               formControlName="universe"
               placeholder="Ingrese el universo del Héroe (Ejemplo: DC, Marvel)"
-              maxlength="11"
+              (input)="onTextInput($event, 'universe')"
               [errorStateMatcher]="matcher"
             />
 
             @if (heroForm.get('universe')?.hasError('required')) {
               <mat-error>El universo es obligatorio</mat-error>
             } @else if (heroForm.get('universe')?.hasError('maxlength')) {
-              <mat-error>El universo debe tener un máximo de 10 caracteres.</mat-error>
+              <mat-error>El universo debe tener un máximo de {{ MAX_LENGTHS['universe'] }} caracteres.</mat-error>
+            } @else if (heroForm.get('universe')?.value?.length === MAX_LENGTHS['universe']) {
+              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
             }
           </mat-form-field>
         </div>
@@ -111,14 +117,16 @@
             id="heroTeam"
             formControlName="team"
             placeholder="Ingrese el equipo al que pertenece el Héroe"
-            maxlength="21"
+            (input)="onTextInput($event, 'team')"
             [errorStateMatcher]="matcher"
           />
 
           @if (heroForm.get('team')?.hasError('required')) {
             <mat-error>El equipo del héroe es obligatorio</mat-error>
           } @else if (heroForm.get('team')?.hasError('maxlength')) {
-            <mat-error>El equipo del héroe debe tener un máximo de 20 caracteres.</mat-error>
+            <mat-error>El equipo del héroe debe tener un máximo de {{ MAX_LENGTHS['team'] }} caracteres.</mat-error>
+          } @else if (heroForm.get('team')?.value?.length === MAX_LENGTHS['team']) {
+            <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
           }
         </mat-form-field>
       </div>
@@ -131,13 +139,16 @@
             formControlName="description"
             placeholder="Escribe una breve descripción del Héroe..."
             rows="3"
+            (input)="onTextInput($event, 'description')"
           >
           </textarea>
 
           @if (heroForm.get('description')?.hasError('required')) {
             <mat-error>La descripción del Héroe es obligatoria.</mat-error>
           } @else if (heroForm.get('description')?.hasError('maxlength')) {
-            <mat-error>El nombre debe tener un máximo de 150 caracteres.</mat-error>
+            <mat-error>La descripción del Héroe debe tener un máximo de {{ MAX_LENGTHS['description'] }} caracteres.</mat-error>
+          } @else if (heroForm.get('description')?.value?.length === MAX_LENGTHS['description']) {
+            <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
           }
         </mat-form-field>
       </div>
@@ -152,7 +163,7 @@
           @for (power of reactivePowersWords(); track $index) {
             <mat-chip-row (removed)="removeReactivePowers(power)">
               {{ power }}
-              <button matChipRemove [attr.aria-label]="'Remover el poder' + power">
+              <button matChipRemove [attr.aria-label]="'Remover el poder ' + power">
                 <mat-icon>cancel</mat-icon>
               </button>
             </mat-chip-row>

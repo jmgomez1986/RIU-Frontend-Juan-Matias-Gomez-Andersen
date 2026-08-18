@@ -1,6 +1,7 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +22,7 @@ export class HeroGridCard {
   // Services
   readonly heroesService = inject(HeroesService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   deleteHero() {
     Swal.fire({
@@ -34,11 +36,14 @@ export class HeroGridCard {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.heroesService.deleteHero(this.hero().id).subscribe({
+        this.heroesService
+          .deleteHero(this.hero().id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
           next: (resp) => {
             Swal.fire({
               title: 'Se eliminó el héroe con éxito',
-              text: 'Tú nuevo Héroe ha sido creado.',
+              text: 'El Héroe ha sido eliminado.',
               icon: 'success',
             });
             this.heroDeleted.emit();
@@ -57,9 +62,9 @@ export class HeroGridCard {
   }
 
   editHero() {
-    this.router.navigate([`/edit-hero/${this.hero().id}`], { state: { mode: 'edit' } });
+    this.router.navigate([`/edit-hero/${this.hero().id}`]);
   }
   viewHero() {
-    this.router.navigate([`/view-hero/${this.hero().id}`], { state: { mode: 'view' } });
+    this.router.navigate([`/view-hero/${this.hero().id}`]);
   }
 }

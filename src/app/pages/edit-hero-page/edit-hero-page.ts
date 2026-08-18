@@ -1,8 +1,8 @@
-import { Component, inject, input, resource, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, inject, input, resource } from '@angular/core';
 import { HeroesService } from '../../services/heroes';
 import { firstValueFrom } from 'rxjs';
 import EditHero from '../../heroes/components/edit-hero/edit-hero';
+import { Mode } from '../../interfaces/shared.interface';
 
 @Component({
   selector: 'app-edit-hero-page',
@@ -11,23 +11,18 @@ import EditHero from '../../heroes/components/edit-hero/edit-hero';
 })
 export default class EditHeroPage {
   heroId = input.required<string>();
-  mode = signal<string>('edit');
+  /** El modo ('edit' | 'view') es enlazad por el router (withComponentInputBinding)
+   * desde el data de la ruta. */
+  mode = input<Mode>('edit');
   // Services
   readonly heroesService = inject(HeroesService);
-  private router = inject(Router);
 
   heroeResource = resource({
-    params: (): any => ({
+    params: (): { heroId: string } => ({
       heroId: this.heroId(),
     }),
     loader: async () => {
       return await firstValueFrom(this.heroesService.getHeroById(this.heroId()));
     },
   });
-
-  constructor() {
-    // Se obtiene el valor de mode del state del roter
-    const state = this.router.currentNavigation()?.extras?.state as { mode?: string } | null;
-    this.mode.set(state?.mode ?? 'edit');
-  }
 }
