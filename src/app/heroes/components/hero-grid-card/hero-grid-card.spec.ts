@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import Swal, { type SweetAlertResult } from 'sweetalert2';
 
 import { HeroGridCard } from './hero-grid-card';
 import { Hero } from '../../../interfaces/heroes.interface';
+import { of, throwError } from 'rxjs';
+import { HeroesService } from '../../../services/heroes';
 
 // Se crea el Mock del heroe cpmo una arrow function, para despues si es necesario, en otros test,
 // usarla para sobreescribir algun atributo
@@ -20,13 +24,47 @@ const createMockHero = (overrides: Partial<Hero> = {}): Hero => ({
   ...overrides,
 });
 
+// Fake del servicio: cada método es un vi.fn() que emite al instante.
+// No se toca HTTP ni hace falta provideHttpClientTesting (patrón ya usado en el repo).
+const createHeroesServiceMock = () => ({
+  getHeroes: vi.fn(),
+  getHeroPaginated: vi.fn(),
+  getHeroById: vi.fn(),
+  addNewHero: vi.fn().mockReturnValue(of({ res: createMockHero() })),
+  editHero: vi.fn().mockReturnValue(of(createMockHero())),
+  deleteHero: vi.fn().mockReturnValue(of(createMockHero())),
+});
+
+// Se mockea el módulo de sweetalert2 completo para poder espiar Swal.fire sin tocar el módulo real.
+vi.mock('sweetalert2', () => ({
+  default: { fire: vi.fn() },
+}));
+
+// Espera a que se resuelvan las promesas (el .then de Swal.fire, RxJS, etc.).
+const flushMicrotasks = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+// Simula la confirmación/cancelación del diálogo de sweetalert2.
+const mockSwalConfirmation = (isConfirmed: boolean) => {
+  vi.mocked(Swal.fire).mockResolvedValue({
+    isConfirmed,
+    isDenied: false,
+    isDismissed: !isConfirmed,
+  } as SweetAlertResult);
+};
+
 describe('HeroGridCard', () => {
   let component: HeroGridCard;
   let fixture: ComponentFixture<HeroGridCard>;
+  let router: Router;
+  let heroesService!: ReturnType<typeof createHeroesServiceMock>;
+  let heroDeletedSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
+    heroesService = createHeroesServiceMock();
+
     await TestBed.configureTestingModule({
       imports: [HeroGridCard],
+      providers: [provideRouter([]), { provide: HeroesService, useValue: heroesService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeroGridCard);
@@ -34,8 +72,13 @@ describe('HeroGridCard', () => {
 
     // El input "hero" es requerido se setea antes usando el mock generado por la función createMockHero
     fixture.componentRef.setInput('hero', createMockHero());
-
+    router = TestBed.inject(Router);
+    heroDeletedSpy = vi.spyOn(component.heroDeleted, 'emit');
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -80,4 +123,72 @@ describe('HeroGridCard', () => {
     expect(chipTexts).not.toContain('Regeneración');
     expect(chipTexts).not.toContain('Invisibilidad');
   });
+
+  it('should call router.navigate with "/edit-hero/" when navigateToNewHero is called', () => {
+    // Se crea un espia de router.navigate para verificar que se llame con el argumento correcto
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.editHero();
+    expect(navigateSpy).toHaveBeenCalledWith(['/edit-hero/1']);
+  });
+
+  it('should call router.navigate with "/view-hero/" when navigateToNewHero is called', () => {
+    // Se crea un espia de router.navigate para verificar que se llame con el argumento correcto
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.viewHero();
+    expect(navigateSpy).toHaveBeenCalledWith(['/view-hero/1']);
+  });
+
+  it('deleteHero muestra el diálogo de confirmación de Swal al guardar', async () => {
+    mockSwalConfirmation(false);
+    component.deleteHero();
+    await flushMicrotasks();
+
+    expect(Swal.fire).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: '¿Está seguro que desea eliminar el héroe',
+        text: 'Se eliminará de la base de datos el héroe elegido',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+      }),
+    );
+
+    // Al cancelar el diálogo, el servicio no debe llamarse.
+    expect(heroesService.deleteHero).not.toHaveBeenCalled();
+  });
+
+  it('deleteHero llama al servicio deleteHero con el id del héroe cuando Swal confirma', async () => {
+    mockSwalConfirmation(true);
+    component.deleteHero();
+    await flushMicrotasks();
+
+    expect(heroesService.deleteHero).toHaveBeenCalledWith('1');
+  });
+
+  it('deleteHero muestra el mensaje de éxito y emite heroDeleted cuando la eliminación es exitosa', async () => {
+    mockSwalConfirmation(true);
+    component.deleteHero();
+    await flushMicrotasks();
+
+    expect(Swal.fire).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Se eliminó el héroe con éxito' }),
+    );
+    expect(heroDeletedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('deleteHero muestra un diálogo de error y loguea en consola cuando el servicio falla', async () => {
+    mockSwalConfirmation(true);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    heroesService.deleteHero.mockReturnValue(throwError(() => new Error('Base de datos caída')));
+
+    component.deleteHero();
+    await flushMicrotasks();
+
+    expect(errorSpy).toHaveBeenCalled();
+    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({ title: 'Error' }));
+  });
+
 });
