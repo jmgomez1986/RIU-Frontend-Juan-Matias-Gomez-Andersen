@@ -289,6 +289,40 @@ describe('NewHero', () => {
       expect(heroesService.addNewHero).not.toHaveBeenCalled();
       expect(heroesService.editHero).not.toHaveBeenCalled();
     });
+
+    it('onSubmit muestra el diálogo de confirmación de Swal al guardar', async () => {
+      setMode('create');
+      fillValidForm();
+      component.reactivePowersWords.set(['Vuelo']);
+      mockSwalConfirmation(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      component.onSubmit();
+      await flushMicrotasks();
+
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: '¿Está seguro que desea guardar los cambios realizados?' }),
+      );
+      expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
+    });
+
+    it('onSubmit muestra el diálogo de éxito cuando el guardado es exitoso', async () => {
+      setMode('create');
+      fillValidForm();
+      component.reactivePowersWords.set(['Vuelo']);
+      mockSwalConfirmation(true);
+      const refreshSpy = vi.spyOn(component.heroesUtilsService, 'refreshLoad');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      component.onSubmit();
+      await flushMicrotasks();
+
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: 'Se guardó con éxito' }),
+      );
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+      expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
+    });
   });
 
   describe('modo edit', () => {
@@ -308,6 +342,40 @@ describe('NewHero', () => {
         expect.objectContaining({ name: 'Clark Kent', alias: 'Superman' }),
       );
       expect(heroesService.addNewHero).not.toHaveBeenCalled();
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+      expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
+    });
+
+    it('onSubmit muestra el diálogo de confirmación de Swal al guardar en modo edit', async () => {
+      setMode('edit');
+      setHero(createMockHero());
+      fixture.detectChanges(); // el effect copia el héroe al formulario
+      mockSwalConfirmation(true);
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      component.onSubmit();
+      await flushMicrotasks();
+
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: '¿Está seguro que desea guardar los cambios realizados?' }),
+      );
+      expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
+    });
+
+    it('onSubmit muestra el diálogo de éxito cuando el guardado es exitoso en modo edit', async () => {
+      setMode('edit');
+      setHero(createMockHero());
+      fixture.detectChanges(); // el effect copia el héroe al formulario
+      mockSwalConfirmation(true);
+      const refreshSpy = vi.spyOn(component.heroesUtilsService, 'refreshLoad');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      component.onSubmit();
+      await flushMicrotasks();
+
+      expect(Swal.fire).toHaveBeenCalledWith(
+        expect.objectContaining({ title: 'Se guardó con éxito' }),
+      );
       expect(refreshSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
     });
