@@ -35,12 +35,6 @@
               </button>
             }
 
-            @if (nameFilter.hasError('minlength')) {
-              <mat-error>
-                El nombre debe tener al menos 3 caracteres para realizar la búsqueda.
-              </mat-error>
-            }
-
             @if (nameFilter.hasError('maxlength')) {
               <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
             }
@@ -82,12 +76,6 @@
               >
                 <mat-icon>close</mat-icon>
               </button>
-            }
-
-            @if (aliasFilter.hasError('minlength')) {
-              <mat-error>
-                El alias debe tener al menos 3 caracteres para realizar la búsqueda.
-              </mat-error>
             }
 
             @if (aliasFilter.hasError('maxlength')) {

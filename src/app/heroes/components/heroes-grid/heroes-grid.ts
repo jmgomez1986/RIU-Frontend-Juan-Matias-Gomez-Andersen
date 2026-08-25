@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, resource, signal } from '@angular/core';
+import { Component, inject, resource, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { firstValueFrom } from 'rxjs';
@@ -10,7 +10,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { HeroesGridResourceParams } from '../../../interfaces/heroes.interface';
+import {
+  HeroesGridResourceParams,
+  HeroesResponsePaginated,
+} from '../../../interfaces/heroes.interface';
 import { HeroesService } from '../../../services/heroes';
 import { HeroGridCard } from '../hero-grid-card/hero-grid-card';
 import { HeroesUtilsService } from '../../../services/heroes-utils';
@@ -42,7 +45,10 @@ export class HeroesGrid {
   searchName = signal('');
   searchAlias = signal('');
 
-  // Resource for paginated heroes
+  /**
+   * El resource delega en el servicio: éste aplica el filtrado por nombre (coincidencia parcial, case-insensitive)
+   * y devuelve la respuesta paginada
+   */
   heroesResource = resource({
     params: (): HeroesGridResourceParams => ({
       page: this.currentPage(),
@@ -53,9 +59,9 @@ export class HeroesGrid {
       },
       refreshKey: this.heroesUtilsService.refreshHeroesGrid(),
     }),
-    loader: async ({ params }) => {
+    loader: async ({ params }): Promise<HeroesResponsePaginated> => {
       return await firstValueFrom(
-        this.heroesService.getHeroPaginated(params.page, params.size, params.query),
+        this.heroesService.getHeroesPaginated(params.page, params.size, params.query),
       );
     },
   });

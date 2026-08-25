@@ -7,25 +7,12 @@ import { HeroesService } from '../../../services/heroes';
 import { Hero, HeroesResponsePaginated } from '../../../interfaces/heroes.interface';
 import { provideRouter } from '@angular/router';
 
-// Se mockea `HeroesService` por un fake que devuelve un observable __que emite al instante__.
-// Entonces hace que el resource se complete, la tarea pendiente se libera y `whenStable()` resuelve.
-// No de depende de "timing" del arranque del resource. Si hacer esto, se daba un timeout ya que
-// quedaba una tarea HTTP en espera. Ya no hace falta `provideHttpClientTesting()` porque
-// ni siquiera se toca HTTP.
-const fakePaginatedResponse: HeroesResponsePaginated = {
-  first: 1,
-  prev: 1,
-  next: 2,
-  last: 1,
-  pages: 1,
-  items: 0,
-  data: [],
-};
-
-const fakeHero: Hero = {
-  id: '1',
-  name: 'Clark Kent',
-  alias: 'Superman',
+// Se mockea `HeroesService.getHeroesPaginated` con un observable que emite al instante,
+// para que el resource se complete y `whenStable()` resuelva sin tocar HTTP.
+const makeHero = (id: string, name: string, alias = 'Superman'): Hero => ({
+  id,
+  name,
+  alias,
   powers: ['Vuelo'],
   description: 'Descripción de prueba',
   team: 'Liga de la Justicia',
@@ -33,20 +20,33 @@ const fakeHero: Hero = {
   status: 'Active',
   category: 'Heroe',
   universe: 'DC',
-};
+});
+
+const makePaginatedResponse = (data: Hero[]): HeroesResponsePaginated => ({
+  first: 1,
+  prev: null,
+  next: null,
+  last: 1,
+  pages: data.length > 0 ? 1 : 0,
+  items: data.length,
+  data,
+});
 
 describe('HeroesGrid', () => {
   let component: HeroesGrid;
   let fixture: ComponentFixture<HeroesGrid>;
+  let paginatedResponse: HeroesResponsePaginated;
 
   beforeEach(async () => {
+    paginatedResponse = makePaginatedResponse([makeHero('1', 'Clark Kent')]);
+
     await TestBed.configureTestingModule({
       imports: [HeroesGrid],
       providers: [
         provideRouter([]),
         {
           provide: HeroesService,
-          useValue: { getHeroPaginated: () => of(fakePaginatedResponse) },
+          useValue: { getHeroesPaginated: () => of(paginatedResponse) },
         },
       ],
     }).compileComponents();
@@ -69,24 +69,36 @@ describe('HeroesGrid', () => {
   });
 
   it('should render a hero card for each hero when the resource has data', async () => {
-    fakePaginatedResponse.data = [fakeHero];
+    paginatedResponse = makePaginatedResponse([
+      makeHero('1', 'Clark Kent'),
+      makeHero('2', 'Bruce Wayne'),
+    ]);
 
     component.heroesResource.reload();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(fixture.debugElement.queryAll(By.css('app-hero-grid-card')).length).toBe(1);
+    expect(fixture.debugElement.queryAll(By.css('app-hero-grid-card')).length).toBe(2);
     expect(fixture.nativeElement.textContent).not.toContain('No se encontraron resultados.');
   });
 
-  it('should call refreshHeroes when a card emits heroDeleted', async () => {
-    fakePaginatedResponse.data = [fakeHero];
+  it('mustra el mensaje de estado vacío cuando no hay resultados', async () => {
+    paginatedResponse = makePaginatedResponse([]);
 
     component.heroesResource.reload();
     await fixture.whenStable();
     fixture.detectChanges();
 
+    expect(fixture.debugElement.queryAll(By.css('app-hero-grid-card')).length).toBe(0);
+    expect(fixture.nativeElement.textContent).toContain('No se encontraron resultados.');
+  });
+
+  it('should call refreshHeroes when a card emits heroDeleted', async () => {
     const refreshSpy = vi.spyOn(component, 'refreshHeroes');
+
+    component.heroesResource.reload();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     const card = fixture.debugElement.query(By.css('app-hero-grid-card'));
     expect(card).toBeTruthy();

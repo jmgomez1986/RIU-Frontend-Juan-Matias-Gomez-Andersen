@@ -37,7 +37,6 @@ const createMockHero = (overrides: Partial<Hero> = {}): Hero => ({
 // No se toca HTTP ni hace falta provideHttpClientTesting (patrón ya usado en el repo).
 const createHeroesServiceMock = () => ({
   getHeroes: vi.fn(),
-  getHeroPaginated: vi.fn(),
   getHeroById: vi.fn(),
   addNewHero: vi.fn().mockReturnValue(of({ res: createMockHero() })),
   editHero: vi.fn().mockReturnValue(of(createMockHero())),

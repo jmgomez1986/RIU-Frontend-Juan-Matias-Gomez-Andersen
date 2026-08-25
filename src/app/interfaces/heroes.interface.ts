@@ -1,10 +1,3 @@
-export interface HeroesGridResourceParams {
-  page: number;
-  size: number;
-  query?: Filters;
-  refreshKey: number;
-}
-
 export interface Filters {
   name?: string;
   alias?: string;
@@ -19,6 +12,14 @@ export interface HeroesResponsePaginated {
   items: number;
   data: Hero[];
 }
+
+export interface HeroesGridResourceParams {
+  page: number;
+  size: number;
+  query: Filters;
+  refreshKey: number;
+}
+
 export interface Hero {
   id: string;
   name: string;

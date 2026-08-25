@@ -26,20 +26,15 @@ import { HeroesUtilsService } from '../../services/heroes-utils';
 })
 export class Filters implements OnInit {
   matcher = new HeroErrorStateMatcher();
-  // Largo máximo de los filtros de texto (única fuente de verdad).
+  // Largo máximo de los filtros de texto.
   readonly FILTER_MAX_LENGTH = 20;
   // Inyeccion de la referencia de destruccion para la desubcripcion
   private destroyRef = inject(DestroyRef);
   private readonly heroesUtilsService = inject(HeroesUtilsService);
-  // FormControl para el filtrado por nombre. Minimo 3 caracteres para disparar la busqueda.
-  readonly nameFilter = new FormControl('', [
-    Validators.minLength(3),
-    Validators.maxLength(this.FILTER_MAX_LENGTH),
-  ]);
-  readonly aliasFilter = new FormControl('', [
-    Validators.minLength(3),
-    Validators.maxLength(this.FILTER_MAX_LENGTH),
-  ]);
+  // FormControl para el filtrado por nombre. El debounce (en ngOnInit) evita
+  // llamadas redundantes mientras se escribe; no hay mínimo de caracteres.
+  readonly nameFilter = new FormControl('', [Validators.maxLength(this.FILTER_MAX_LENGTH)]);
+  readonly aliasFilter = new FormControl('', [Validators.maxLength(this.FILTER_MAX_LENGTH)]);
 
   // Emite hacia el padre el query ya normalizado (trim + >= 3 caracteres o vacio)
   nameFilterApplied = output<string>();
@@ -59,9 +54,8 @@ export class Filters implements OnInit {
       .pipe(
         debounceTime(1000),
         map((value) => value?.trim() ?? ''),
-        // Solo se emite si el form control es valido y el query tiene >= 3 caracteres
-        // (o esta vacio, en cuyo caso se listan todos los heroes).
-        filter((query) => this.nameFilter.valid && (query.length === 0 || query.length >= 3)),
+        // Se emite el query normalizado siempre que el control sea válido.
+        filter(() => this.nameFilter.valid),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -73,9 +67,8 @@ export class Filters implements OnInit {
       .pipe(
         debounceTime(1000),
         map((value) => value?.trim() ?? ''),
-        // Solo se emite si el form control es valido y el query tiene >= 3 caracteres
-        // (o esta vacio, en cuyo caso se listan todos los heroes).
-        filter((query) => this.aliasFilter.valid && (query.length === 0 || query.length >= 3)),
+        // Se emite el query normalizado siempre que el control sea válido
+        filter(() => this.aliasFilter.valid),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
