@@ -25,6 +25,7 @@ import { HeroesUtilsService } from '../../../services/heroes-utils';
 import { TransformTextUppercase } from '../../../directives/transform-text-uppercase';
 import { HeroErrorStateMatcher } from '../../../shared/error-state-matcher';
 import { Mode } from '../../../interfaces/shared.interface';
+import { I18N } from '../../../shared/i18n/es';
 
 /** Nombres de los campos de texto con límite de caracteres. */
 type TextFieldName = 'name' | 'alias' | 'universe' | 'team' | 'description';
@@ -156,17 +157,17 @@ export default class NewHero {
   onSubmit(): void {
     if (this.heroForm.valid) {
       Swal.fire({
-        title: `¿Está seguro que desea guardar los cambios realizados?`,
+        title: I18N.form.confirmSaveTitle,
         text:
           this.mode() === 'create'
-            ? 'Se creará un nuevo Héroe con los datos cargados.'
-            : 'Se guardaran los cambios realizados.',
+            ? I18N.form.confirmSaveCreateText
+            : I18N.form.confirmSaveEditText,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: `${this.mode() === 'create' ? 'Crear' : 'Editar'}`,
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: `${this.mode() === 'create' ? I18N.form.confirmCreate : I18N.form.confirmEdit}`,
+        cancelButtonText: I18N.form.cancel,
       }).then((result) => {
         if (result.isConfirmed) {
           const newHero: Hero = { ...this.heroForm.value };
@@ -179,11 +180,11 @@ export default class NewHero {
           heroesServiceObservable$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
               Swal.fire({
-                title: 'Se guardó con éxito',
+                title: I18N.form.saveSuccessTitle,
                 text:
                   this.mode() === 'create'
-                    ? 'Tú nuevo Héroe ha sido creado.'
-                    : 'El Héroe ha sido editado',
+                    ? I18N.form.saveSuccessCreateText
+                    : I18N.form.saveSuccessEditText,
                 icon: 'success',
               });
               this.heroesUtilsService.refreshLoad();
@@ -195,8 +196,11 @@ export default class NewHero {
                 err,
               );
               Swal.fire({
-                title: 'Error',
-                text: `No se pudo ${this.mode() === 'create' ? 'guardar' : 'editar'} el héroe. Intente nuevamente.`,
+                title: I18N.form.saveErrorTitle,
+                text:
+                  this.mode() === 'create'
+                    ? I18N.form.saveErrorCreateText
+                    : I18N.form.saveErrorEditText,
                 icon: 'error',
               });
             },

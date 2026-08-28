@@ -9,6 +9,7 @@ import NewHero from './new-hero';
 import { HeroesService } from '../../../services/heroes';
 import { Hero } from '../../../interfaces/heroes.interface';
 import { Mode } from '../../../interfaces/shared.interface';
+import { I18N } from '../../../shared/i18n/es';
 
 // Se mockea el módulo de sweetalert2 completo para poder espiar Swal.fire sin tocar el módulo real.
 vi.mock('sweetalert2', () => ({
@@ -377,7 +378,7 @@ describe('NewHero', () => {
       await flushMicrotasks();
 
       expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({ title: '¿Está seguro que desea guardar los cambios realizados?' }),
+        expect.objectContaining({ title: I18N.form.confirmSaveTitle }),
       );
       expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
     });
@@ -394,7 +395,7 @@ describe('NewHero', () => {
       await flushMicrotasks();
 
       expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({ title: 'Se guardó con éxito' }),
+        expect.objectContaining({ title: I18N.form.saveSuccessTitle }),
       );
       expect(refreshSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
@@ -433,7 +434,7 @@ describe('NewHero', () => {
       await flushMicrotasks();
 
       expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({ title: '¿Está seguro que desea guardar los cambios realizados?' }),
+        expect.objectContaining({ title: I18N.form.confirmSaveTitle }),
       );
       expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
     });
@@ -450,7 +451,7 @@ describe('NewHero', () => {
       await flushMicrotasks();
 
       expect(Swal.fire).toHaveBeenCalledWith(
-        expect.objectContaining({ title: 'Se guardó con éxito' }),
+        expect.objectContaining({ title: I18N.form.saveSuccessTitle }),
       );
       expect(refreshSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenCalledWith(['/heroes']);
@@ -534,6 +535,6 @@ describe('NewHero', () => {
     await flushMicrotasks();
 
     expect(errorSpy).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({ title: 'Error' }));
+    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({ title: I18N.form.saveErrorTitle }));
   });
 });

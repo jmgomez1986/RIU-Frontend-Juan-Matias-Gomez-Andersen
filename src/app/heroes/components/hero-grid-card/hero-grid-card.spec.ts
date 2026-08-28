@@ -6,6 +6,7 @@ import { HeroGridCard } from './hero-grid-card';
 import { Hero } from '../../../interfaces/heroes.interface';
 import { of, throwError } from 'rxjs';
 import { HeroesService } from '../../../services/heroes';
+import { I18N } from '../../../shared/i18n/es';
 
 // Se crea el Mock del heroe cpmo una arrow function, para despues si es necesario, en otros test,
 // usarla para sobreescribir algun atributo
@@ -144,14 +145,14 @@ describe('HeroGridCard', () => {
 
     expect(Swal.fire).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: '¿Está seguro que desea eliminar el héroe',
-        text: 'Se eliminará de la base de datos el héroe elegido',
+        title: I18N.heroes.card.confirmDeleteTitle,
+        text: I18N.heroes.card.confirmDeleteText,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: I18N.heroes.card.confirmButton,
+        cancelButtonText: I18N.heroes.card.cancelButton,
       }),
     );
 
@@ -173,7 +174,7 @@ describe('HeroGridCard', () => {
     await flushMicrotasks();
 
     expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Se eliminó el héroe con éxito' }),
+      expect.objectContaining({ title: I18N.heroes.card.deleteSuccessTitle }),
     );
     expect(heroDeletedSpy).toHaveBeenCalledTimes(1);
   });
@@ -187,7 +188,9 @@ describe('HeroGridCard', () => {
     await flushMicrotasks();
 
     expect(errorSpy).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({ title: 'Error' }));
+    expect(Swal.fire).toHaveBeenCalledWith(
+      expect.objectContaining({ title: I18N.heroes.card.deleteErrorTitle }),
+    );
   });
 
 });
