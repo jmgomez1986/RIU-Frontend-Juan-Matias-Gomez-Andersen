@@ -19,9 +19,16 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
   - Tests actualizados: 1-2 caracteres ahora sí disparan la búsqueda; el control
     inválido (sup >= 20) sigue sin emitir.
   - Se eliminaron los `mat-error` de "al menos 3 caracteres" de filters.html.
-- [ ] **Tests de casos límite de la grilla**
+- [x] **Tests de casos límite de la grilla**
   - Test del estado vacío: `@empty` → "No se encontraron resultados.".
-  - Al borrar el último elemento estando en página > 1, retroceder de página.
+  - Paginación al borrar el último elemento: `effect` en HeroesGrid detecta la
+    respuesta con `data` vacía estando en una página > 1 (página fuera de rango
+    tras el borrado) y retrocede a la última página con datos
+    (`Math.max(1, resp.pages)`); con `items: 0` cae a la página 1 (estado vacío
+    legítimo). Elegido sobre "ir siempre a página 1" porque conserva el contexto
+    del usuario en borrados sucesivos y escala con el crecimiento del dataset.
+    Test con mock consciente de la página pedida: página 2 fuera de rango →
+    vuelve a la 1 y renderiza los 10 héroes restantes.
 
 ## 2. Accesibilidad
 
@@ -62,6 +69,6 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## Orden de implementación
 
-1) Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla →
+1) Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla ✅ →
 4) labels ✅ → 5) OnPush ✅ → 6) ruta `**` ✅ → 7) limpieza + ESLint ✅ →
 8) NgOptimizedImage → 9) estilos/responsive.

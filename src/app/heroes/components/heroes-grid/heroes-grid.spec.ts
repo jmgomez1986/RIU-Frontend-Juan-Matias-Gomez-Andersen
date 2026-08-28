@@ -36,9 +36,13 @@ describe('HeroesGrid', () => {
   let component: HeroesGrid;
   let fixture: ComponentFixture<HeroesGrid>;
   let paginatedResponse: HeroesResponsePaginated;
+  let getHeroesPaginatedMock: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     paginatedResponse = makePaginatedResponse([makeHero('1', 'Clark Kent')]);
+    getHeroesPaginatedMock = vi.fn();
+    // Por defecto responde igual que antes, sin importar la página pedida.
+    getHeroesPaginatedMock.mockImplementation(() => of(paginatedResponse));
 
     await TestBed.configureTestingModule({
       imports: [HeroesGrid],
@@ -46,7 +50,7 @@ describe('HeroesGrid', () => {
         provideRouter([]),
         {
           provide: HeroesService,
-          useValue: { getHeroesPaginated: () => of(paginatedResponse) },
+          useValue: { getHeroesPaginated: getHeroesPaginatedMock },
         },
       ],
     }).compileComponents();
@@ -105,6 +109,37 @@ describe('HeroesGrid', () => {
     card.componentInstance.heroDeleted.emit();
 
     expect(refreshSpy).toHaveBeenCalled();
+  });
+
+  it('al borrar el último elemento de la última página, retrocede a una página con datos', async () => {
+    // Dataset: 10 héroes = 1 página completa (itemsPerPage = 10). Tras el borrado,
+    // la página 2 queda fuera de rango: data vacía pero items > 0.
+    const heroes = Array.from({ length: 10 }, (_, i) => makeHero(String(i + 1), `Héroe ${i + 1}`));
+    const page1Response = makePaginatedResponse(heroes);
+    const page2OutOfRange: HeroesResponsePaginated = {
+      ...makePaginatedResponse([]),
+      items: 10,
+      pages: 1,
+    };
+
+    // Mock consciente de la página pedida: la 2 responde vacía, la 1 con los datos.
+    getHeroesPaginatedMock.mockImplementation((page: number) =>
+      of(page > 1 ? page2OutOfRange : page1Response),
+    );
+
+    // El usuario está en la página 2 y borra el último elemento de esa página:
+    component.currentPage.set(2);
+    component.refreshHeroes();
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // El efecto detecta la página fuera de rango y vuelve a la última con datos.
+    expect(component.currentPage()).toBe(1);
+    expect(fixture.debugElement.queryAll(By.css('app-hero-grid-card')).length).toBe(10);
+    expect(fixture.nativeElement.textContent).not.toContain('No se encontraron resultados.');
   });
 
   it('applyNameFilter setea searchName y resetea currentPage a 1', () => {

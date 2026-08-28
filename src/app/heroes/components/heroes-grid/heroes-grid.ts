@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, resource, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, resource, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { firstValueFrom } from 'rxjs';
@@ -66,6 +66,19 @@ export class HeroesGrid {
       );
     },
   });
+
+  constructor() {
+    // Caso límite: al borrar el último elemento de una página avanzada, la página
+    // actual puede quedar fuera de rango (respuesta con data vacía pero items > 0).
+    // Retrocede a la última página con datos (o a la 1 si no quedan resultados) para
+    // que la grilla no muestre "sin resultados" habiendo datos en otras páginas.
+    effect(() => {
+      const resp = this.heroesResource.value();
+      if (resp && resp.data.length === 0 && this.currentPage() > 1) {
+        this.currentPage.set(Math.max(1, resp.pages));
+      }
+    });
+  }
 
   handlePageEvent(e: PageEvent) {
     this.currentPage.set(e.pageIndex + 1);
