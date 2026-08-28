@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef, HostListener, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, forwardRef, HostListener, inject, Renderer2 } from '@angular/core';
 import { DefaultValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Directive({
@@ -22,7 +22,7 @@ export class TransformTextUppercase extends DefaultValueAccessor {
     this.onChange(target.value);
   }
 
-  constructor(renderer: Renderer2, elementRef: ElementRef) {
-    super(renderer, elementRef, false);
+  constructor() {
+    super(inject(Renderer2), inject(ElementRef), false);
   }
 }

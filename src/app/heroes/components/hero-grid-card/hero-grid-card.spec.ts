@@ -181,7 +181,7 @@ describe('HeroGridCard', () => {
 
   it('deleteHero muestra un diálogo de error y loguea en consola cuando el servicio falla', async () => {
     mockSwalConfirmation(true);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     heroesService.deleteHero.mockReturnValue(throwError(() => new Error('Base de datos caída')));
 
     component.deleteHero();

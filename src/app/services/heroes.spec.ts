@@ -178,17 +178,6 @@ describe('Heroes', () => {
     });
   });
   it('should call add new hero request', () => {
-    const mockHeroBody: Partial<Hero> = {
-      name: 'Clark Kent',
-      alias: 'Superman',
-      powers: ['Vuelo'],
-      description: 'Descripción de prueba',
-      team: 'Liga de la Justicia',
-      image: 'superman.jpg',
-      status: 'Active',
-      category: 'Heroe',
-      universe: 'DC',
-    };
     const mockHeroResponse: NewHeroResponse = {
       res: mockHero,
     };

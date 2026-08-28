@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -14,6 +14,7 @@ import { I18N } from '../../../shared/i18n/es';
 
 @Component({
   selector: 'app-hero-grid-card',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIcon],
   templateUrl: './hero-grid-card.html',
 })
@@ -41,7 +42,7 @@ export class HeroGridCard {
           .deleteHero(this.hero().id)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-          next: (resp) => {
+          next: () => {
             Swal.fire({
               title: I18N.heroes.card.deleteSuccessTitle,
               text: I18N.heroes.card.deleteSuccessText,

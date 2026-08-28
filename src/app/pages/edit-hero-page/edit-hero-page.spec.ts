@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import EditHeroPage from './edit-hero-page';
@@ -30,7 +29,6 @@ const createHeroesServiceMock = () => ({
 describe('EditHeroPage', () => {
   let component: EditHeroPage;
   let fixture: ComponentFixture<EditHeroPage>;
-  let router: Router;
   let heroesService!: ReturnType<typeof createHeroesServiceMock>;
 
   const setMode = (mode: Mode) => fixture.componentRef.setInput('mode', mode);
@@ -48,7 +46,6 @@ describe('EditHeroPage', () => {
 
     fixture = TestBed.createComponent(EditHeroPage);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     fixture.componentRef.setInput('heroId', '1');
     await fixture.whenStable();
   });

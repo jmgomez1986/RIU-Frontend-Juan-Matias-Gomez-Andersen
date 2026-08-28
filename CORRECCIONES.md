@@ -31,10 +31,23 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## 3. Arquitectura y rendering
 
-- [ ] `changeDetection: ChangeDetectionStrategy.OnPush` en todos los componentes.
-- [ ] Corregir ruta comodín: `path: '*'` → `path: '**'` en `app.routes.ts`.
-- [ ] Eliminar código muerto restante e imports huérfanos.
-- [ ] Configurar ESLint (Angular ESLint) para detectar esto automáticamente.
+- [x] `changeDetection: ChangeDetectionStrategy.OnPush` en los 11 componentes
+      (app, home/heroes/new/edit pages, grid, card, filters, new-hero, edit-hero,
+      custom-upload-image).
+- [x] Corregir ruta comodín: la ruta externa `path: '*'` → `path: '**'` en
+      `app.routes.ts` (la interna de children ya era `**`; la externa quedaba
+      inactiva como código muerto).
+- [x] Eliminar código muerto e imports huérfanos (detectados con ESLint):
+      `Validators` sin uso (custom-upload-image), `By`/`Router` + variable `router`
+      sin uso (edit-hero-page.spec), `mockHeroBody` sin uso (heroes.spec), parámetro
+      `resp` sin usar (hero-grid-card). NOTA: `getHeroes()` y `DestroyRef` NO eran
+      código muerto (se usan en `getHeroesPaginated` y `takeUntilDestroyed`).
+- [x] Configurar ESLint: `angular-eslint@21.4.0` con flat config (`eslint.config.js`),
+      reglas de selectores y `templateAccessibility` para HTML. `ng lint` sin errores.
+      Correcciones surgidas del lint: `prefer-inject` en la directiva de mayúsculas
+      (spec adaptado a `runInInjectionContext`), selector del host de test con prefijo
+      `app`, arrows vacías en specs → `() => undefined`, y label "Estado" asociado
+      (`for`/`id` + `aria-labelledby` desde el texto visible).
 
 ## 4. Rendimiento
 
@@ -49,5 +62,6 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## Orden de implementación
 
-1. Búsqueda en servicio + tests → 2) min. 3 caracteres → 3) tests grilla → 4) labels →
-2. OnPush → 6) ruta `**` → 7) limpieza + ESLint → 8) NgOptimizedImage → 9) estilos/responsive.
+1) Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla →
+4) labels ✅ → 5) OnPush ✅ → 6) ruta `**` ✅ → 7) limpieza + ESLint ✅ →
+8) NgOptimizedImage → 9) estilos/responsive.

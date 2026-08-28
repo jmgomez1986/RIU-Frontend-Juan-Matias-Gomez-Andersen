@@ -1,4 +1,4 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, resource, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { firstValueFrom } from 'rxjs';
@@ -21,6 +21,7 @@ import { Filters } from '../../../components/filters/filters';
 
 @Component({
   selector: 'app-heroes-grid',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HeroGridCard,
     Filters,

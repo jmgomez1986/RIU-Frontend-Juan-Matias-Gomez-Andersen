@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -37,6 +37,7 @@ interface HeroeCategory {
 
 @Component({
   selector: 'app-new-hero',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CustomUploadImage,
     TransformTextUppercase,

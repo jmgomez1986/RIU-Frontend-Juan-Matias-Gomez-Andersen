@@ -33,7 +33,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: '*',
+    path: '**',
     redirectTo: '',
     pathMatch: 'full',
   },

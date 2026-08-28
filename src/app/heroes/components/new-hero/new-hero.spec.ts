@@ -528,7 +528,7 @@ describe('NewHero', () => {
     fillValidForm();
     component.reactivePowersWords.set(['Vuelo']);
     mockSwalConfirmation(true);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     heroesService.addNewHero.mockReturnValue(throwError(() => new Error('Base de datos caída')));
 
     component.onSubmit();

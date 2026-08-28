@@ -1,4 +1,10 @@
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Injector,
+  Renderer2,
+  runInInjectionContext,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TransformTextUppercase } from './transform-text-uppercase';
 
@@ -17,7 +23,15 @@ describe('TransformTextUppercase', () => {
   let directive: TransformTextUppercase;
 
   beforeEach(() => {
-    directive = new TransformTextUppercase({} as Renderer2, {} as ElementRef);
+    // La directiva usa inject() (regla prefer-inject); se instancia dentro de un
+    // contexto de inyección con los mismos mocks que antes se pasaban por constructor.
+    const injector = Injector.create({
+      providers: [
+        { provide: Renderer2, useValue: {} as Renderer2 },
+        { provide: ElementRef, useValue: {} as ElementRef },
+      ],
+    });
+    directive = runInInjectionContext(injector, () => new TransformTextUppercase());
   });
 
   it('should create an instance', () => {
@@ -66,7 +80,7 @@ describe('TransformTextUppercase', () => {
 
 // Host mínimo para testear la directiva conectada al DOM y al HostListener real.
 @Component({
-  selector: 'host-test',
+  selector: 'app-host-test',
   template: '<input appTransformTextUppercase />',
   imports: [TransformTextUppercase],
 })

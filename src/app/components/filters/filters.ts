@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,6 +13,7 @@ import { HeroesUtilsService } from '../../services/heroes-utils';
 
 @Component({
   selector: 'app-filters',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
