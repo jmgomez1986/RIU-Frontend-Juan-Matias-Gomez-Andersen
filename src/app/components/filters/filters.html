@@ -5,11 +5,11 @@
     </div>
     <!-- Name Filter -->
     <div class="items-center gap-3 col-start-2 col-end-4">
-      <div class="flex w-full gap-4">
+      <div class="flex w-full gap-4 items-start">
         <div class="w-1/6">
-          <mat-label class="block text-center text-m text-blue-gray-300 font-medium">
+          <label for="heroName" class="block text-center text-m text-blue-gray-300 font-medium">
             Nombre a buscar:
-          </mat-label>
+          </label>
         </div>
         <div class="w-5/6">
           <mat-form-field appearance="outline" class="w-full custom-css-height">
@@ -27,7 +27,7 @@
               <button
                 matSuffix
                 matButton
-                aria-label="Clear"
+                aria-label="Limpiar búsqueda"
                 class="cursor-pointer"
                 (click)="nameFilter.setValue('')"
               >
@@ -40,7 +40,9 @@
             }
 
             @if (nameFilter.value?.length === FILTER_MAX_LENGTH) {
-              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
+              <mat-hint align="end" class="!text-amber-600"
+                >Límite de caracteres alcanzado</mat-hint
+              >
             }
           </mat-form-field>
         </div>
@@ -48,11 +50,11 @@
     </div>
     <!-- Alias Filter -->
     <div class="items-center gap-3 col-start-4 col-end-6">
-      <div class="flex w-full gap-4">
+      <div class="flex w-full gap-4 items-start">
         <div class="w-1/6">
-          <mat-label class="block text-center text-m text-blue-gray-300 font-medium mb-2">
+          <label for="heroAlias" class="block text-center text-m text-blue-gray-300 font-medium">
             Alias a buscar:
-          </mat-label>
+          </label>
         </div>
         <div class="w-5/6">
           <mat-form-field appearance="outline" class="w-full custom-css-height">
@@ -70,7 +72,7 @@
               <button
                 matSuffix
                 matButton
-                aria-label="Clear"
+                aria-label="Limpiar búsqueda"
                 class="cursor-pointer"
                 (click)="aliasFilter.setValue('')"
               >
@@ -83,7 +85,9 @@
             }
 
             @if (aliasFilter.value?.length === FILTER_MAX_LENGTH) {
-              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
+              <mat-hint align="end" class="!text-amber-600"
+                >Límite de caracteres alcanzado</mat-hint
+              >
             }
           </mat-form-field>
         </div>

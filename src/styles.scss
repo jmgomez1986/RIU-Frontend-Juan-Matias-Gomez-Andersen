@@ -43,13 +43,19 @@ body {
 
 //Se ajusta la altura del wrapper del mat-form-field
 .custom-css-height .mat-mdc-text-field-wrapper {
-  height: 45px !important;
+  height: 40px !important;
 }
-// Se ajusta la alineacion verticaldel mat-form-field
+// Se ajusta la alineacion vertical del mat-form-field
 .custom-css-height .mat-mdc-form-field-infix {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
   min-height: unset !important;
+}
+// Se ajusta aineacion de label flotantes
+.custom-css-float-label {
+  label {
+    top: 50% !important;
+  }
 }
 // Se ajusta matpaginator
 mat-paginator {

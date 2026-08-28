@@ -4,7 +4,7 @@
     <div class="relative aspect-[3/4] w-full overflow-hidden">
       <img
         [src]="hero().image"
-        [alt]="`Image of ${hero().name}`"
+        [alt]="`Imagen de ${hero().name}`"
         class="h-full w-full object-cover"
       />
 
@@ -77,7 +77,7 @@
       <button
         matButton="elevated"
         class="!bg-red-400 !text-white"
-        aria-label="Delete Hero"
+        aria-label="Eliminar héroe"
         (click)="deleteHero()"
       >
         <mat-icon>delete</mat-icon>
@@ -88,7 +88,7 @@
       <button
         matButton="elevated"
         class="!bg-green-400 !text-white"
-        aria-label="View Hero"
+        aria-label="Ver héroe"
         (click)="viewHero()"
       >
         <mat-icon>visibility</mat-icon>
@@ -99,7 +99,7 @@
       <button
         matButton="elevated"
         class="!bg-indigo-400 !text-white"
-        aria-label="Edit Hero"
+        aria-label="Editar héroe"
         (click)="editHero()"
       >
         <mat-icon>edit</mat-icon>

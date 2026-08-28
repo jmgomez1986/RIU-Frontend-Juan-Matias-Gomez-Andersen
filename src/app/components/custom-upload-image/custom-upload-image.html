@@ -1,14 +1,15 @@
 <div class="grid grid-cols-2 items-center gap-4 mb-8">
   <div class="grid grid-cols-2 gap-4 items-center">
     <div class="col-start-1 col-end-3">
-      <mat-label class="block text-m text-blue-gray-300 font-medium mb-1">
+      <label for="heroImage" class="block text-m text-blue-gray-300 font-medium mb-1">
         Imagen del Héroe
-      </mat-label>
+      </label>
       <mat-form-field appearance="outline" class="custom-css-height w-full">
         <!-- Muestra el nombre del archivo (control deshabilitado: solo se setea al subir imagen con el botón).
              La imagen en base64 se emite al componente padre vía selectionChange -->
         <input
           matInput
+          id="heroImage"
           [formControl]="imageNameControl"
           placeholder="Ninguna imagen seleccionada"
         />
@@ -20,12 +21,13 @@
         <mat-hint>Tamaño máximo: 1 MB · Formatos: JPG, JPEG, PNG</mat-hint>
       </mat-form-field>
 
-      <!-- Se oculta el input nativo -->
+      <!-- Se oculta el input nativo. Igual se describe para lectores de pantalla. -->
       <input
         type="file"
         #fileInput
         class="hidden"
         accept="image/*"
+        aria-label="Seleccionar archivo de imagen"
         (change)="onFileSelect($event)"
       />
     </div>
@@ -38,7 +40,7 @@
         (click)="fileInput.click()"
         [disabled]="mode() === 'view'"
       >
-        <mat-icon>cloud_upload</mat-icon>
+        <mat-icon aria-hidden="true">cloud_upload</mat-icon>
         Elegir imagen
       </button>
     </div>
@@ -47,10 +49,10 @@
   <div class="grid grid-cols-2 gap-4 items-center">
     <div class="col-start-1 col-end-2">
       <!-- Nombre del archivo seleccionado -->
-      <div class="justify-center file-info">
+      <div class="justify-center file-info" aria-live="polite" role="status">
         @if (imageFileName()) {
-          <mat-icon class="check-icon">check_circle</mat-icon>
-          <span class="file-name">Imágen cargada con éxito</span>
+          <mat-icon class="check-icon" aria-hidden="true">check_circle</mat-icon>
+          <span class="file-name">Imagen cargada con éxito</span>
         } @else {
           <span class="text-blue-gray-300">Ninguna imagen seleccionada</span>
         }
