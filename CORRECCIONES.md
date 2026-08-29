@@ -58,7 +58,7 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## 4. Rendimiento
 
-- [ ] **NgOptimizedImage** en las cards: `ngSrc` para imágenes de archivo (`/images/*`).
+- [x] **NgOptimizedImage** en las cards: `ngSrc` para imágenes de archivo (`/images/*`).
       Las imágenes base64 (subidas) se excluyen de la directiva (data URLs no soportadas).
 
 ## 5. Estilos
@@ -69,6 +69,6 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## Orden de implementación
 
-1) Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla ✅ →
-4) labels ✅ → 5) OnPush ✅ → 6) ruta `**` ✅ → 7) limpieza + ESLint ✅ →
-8) NgOptimizedImage → 9) estilos/responsive.
+1. Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla ✅ →
+2. labels ✅ → 5) OnPush ✅ → 6) ruta `**` ✅ → 7) limpieza + ESLint ✅ →
+3. NgOptimizedImage → 9) estilos/responsive.

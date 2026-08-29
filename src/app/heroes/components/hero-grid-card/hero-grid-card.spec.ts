@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import Swal, { type SweetAlertResult } from 'sweetalert2';
+import { of, throwError } from 'rxjs';
+import { screen } from '@testing-library/angular';
 
 import { HeroGridCard } from './hero-grid-card';
 import { Hero } from '../../../interfaces/heroes.interface';
-import { of, throwError } from 'rxjs';
 import { HeroesService } from '../../../services/heroes';
 import { I18N } from '../../../shared/i18n/es';
 
@@ -94,7 +95,7 @@ describe('HeroGridCard', () => {
     expect(statusElement).toBeTruthy();
   });
 
-  it('should display 3 chiips of powers ', () => {
+  it('should display 3 chips of powers ', () => {
     const chips = fixture.nativeElement.querySelectorAll('mat-chip') as NodeListOf<Element>;
     const chipTexts = Array.from(chips).map((chip) => chip.textContent?.trim());
 
@@ -193,4 +194,17 @@ describe('HeroGridCard', () => {
     );
   });
 
+  it('should show image when is base 64', () => {
+    // Se setea el input "hero" con una imagen que simula ser que esta en base 64
+    fixture.componentRef.setInput(
+      'hero',
+      createMockHero({
+        image: 'data:image',
+      }),
+    );
+    fixture.detectChanges();
+
+    const imgElement = screen.getByTestId('img-base64');
+    expect(imgElement).toBeDefined();
+  });
 });
