@@ -7,7 +7,7 @@
       (selectionChange)="onImageChanged($event)"
     />
 
-    <div class="grid grid-cols-2 gap-4 items-start">
+    <div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-4 items-start">
       <!-- Column 1 -->
       <div class="w-full">
         <!-- Name Field -->
@@ -40,10 +40,15 @@
             }
           </mat-form-field>
         </div>
-        <div class="grid grid-cols-2 gap-4 items-start mb-5">
+        <div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-4 items-start mb-5">
           <!-- Status Field -->
-          <div class="w-full">
-            <label for="heroStatus" id="heroStatusLabel" class="block text-m text-blue-gray-300 font-medium mb-1">Estado</label>
+          <div class="w-full mb-5">
+            <label
+              for="heroStatus"
+              id="heroStatusLabel"
+              class="block text-m text-blue-gray-300 font-medium mb-1"
+              >Estado</label
+            >
 
             <mat-radio-group
               id="heroStatus"
@@ -51,7 +56,7 @@
               formControlName="status"
             >
               <mat-radio-button value="Active" checked="true">Activo</mat-radio-button>
-              <mat-radio-button value="Inactive">No activo</mat-radio-button>
+              <mat-radio-button value="Inactive">Inactivo</mat-radio-button>
             </mat-radio-group>
           </div>
           <!-- Category Field -->

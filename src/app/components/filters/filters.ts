@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  output,
+} from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -23,7 +30,6 @@ import { HeroesUtilsService } from '../../services/heroes-utils';
     MatCardModule,
   ],
   templateUrl: './filters.html',
-  styleUrl: './filters.scss',
 })
 export class Filters implements OnInit {
   matcher = new HeroErrorStateMatcher();
