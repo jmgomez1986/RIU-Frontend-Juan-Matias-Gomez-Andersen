@@ -1,105 +1,89 @@
 <mat-card appearance="outlined" class="mb-5 p-4 !shadow-lg">
-  <div class="grid grid-cols-5 gap-4 items-center">
-    <div class="text-xl text-center text-blue-500 font-medium mb-2">
+  <div
+    class="grid grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr_1fr] gap-4 items-center lg:items-start"
+  >
+    <div class="row-span-2 flex items-center justify-center text-xl text-blue-500 font-medium px-2">
       <span>Filtros</span>
     </div>
     <!-- Name Filter -->
-    <div class="items-center gap-3 col-start-2 col-end-4">
-      <div class="flex w-full gap-4">
-        <div class="w-1/6">
-          <mat-label class="block text-center text-m text-blue-gray-300 font-medium">
-            Nombre a buscar:
-          </mat-label>
-        </div>
-        <div class="w-5/6">
-          <mat-form-field appearance="outline" class="w-full custom-css-height">
-            <input
-              matInput
-              id="heroName"
-              [formControl]="nameFilter"
-              placeholder="Ingrese el nombre del Héroe a buscar"
-              (input)="onTextInput($event, nameFilter)"
-              [errorStateMatcher]="matcher"
-            />
+    <div class="flex flex-col sm:flex-row items-start gap-2 w-full">
+      <label
+        for="heroName"
+        class="sm:w-auto text-sm text-blue-gray-300 font-medium whitespace-nowrap pt-2.5"
+      >
+        Nombre a buscar:
+      </label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input
+          matInput
+          id="heroName"
+          [formControl]="nameFilter"
+          placeholder="Ingrese el nombre del Héroe a buscar"
+          (input)="onTextInput($event, nameFilter)"
+          [errorStateMatcher]="matcher"
+        />
 
-            <!-- Boton para limpiar el input -->
-            @if (nameFilter.value) {
-              <button
-                matSuffix
-                matButton
-                aria-label="Clear"
-                class="cursor-pointer"
-                (click)="nameFilter.setValue('')"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            }
+        <!-- Boton para limpiar el input -->
+        @if (nameFilter.value) {
+          <button
+            matSuffix
+            matButton
+            aria-label="Limpiar búsqueda"
+            class="cursor-pointer"
+            (click)="nameFilter.setValue('')"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
 
-            @if (nameFilter.hasError('minlength')) {
-              <mat-error>
-                El nombre debe tener al menos 3 caracteres para realizar la búsqueda.
-              </mat-error>
-            }
+        @if (nameFilter.hasError('maxlength')) {
+          <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
+        }
 
-            @if (nameFilter.hasError('maxlength')) {
-              <mat-error>El nombre debe tener un máximo de 20 caracteres.</mat-error>
-            }
-
-            @if (nameFilter.value?.length === FILTER_MAX_LENGTH) {
-              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
-            }
-          </mat-form-field>
-        </div>
-      </div>
+        @if (nameFilter.value?.length === FILTER_MAX_LENGTH) {
+          <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
+        }
+      </mat-form-field>
     </div>
     <!-- Alias Filter -->
-    <div class="items-center gap-3 col-start-4 col-end-6">
-      <div class="flex w-full gap-4">
-        <div class="w-1/6">
-          <mat-label class="block text-center text-m text-blue-gray-300 font-medium mb-2">
-            Alias a buscar:
-          </mat-label>
-        </div>
-        <div class="w-5/6">
-          <mat-form-field appearance="outline" class="w-full custom-css-height">
-            <input
-              matInput
-              id="heroAlias"
-              [formControl]="aliasFilter"
-              placeholder="Ingrese el alias del Héroe a buscar"
-              (input)="onTextInput($event, aliasFilter)"
-              [errorStateMatcher]="matcher"
-            />
+    <div class="flex flex-col sm:flex-row items-start gap-2 w-full">
+      <label
+        for="heroAlias"
+        class="sm:w-auto text-sm text-blue-gray-300 font-medium whitespace-nowrap pt-2.5"
+      >
+        Alias a buscar:
+      </label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input
+          matInput
+          id="heroAlias"
+          [formControl]="aliasFilter"
+          placeholder="Ingrese el alias del Héroe a buscar"
+          (input)="onTextInput($event, aliasFilter)"
+          [errorStateMatcher]="matcher"
+        />
 
-            <!-- Boton para limpiar el input -->
-            @if (aliasFilter.value) {
-              <button
-                matSuffix
-                matButton
-                aria-label="Clear"
-                class="cursor-pointer"
-                (click)="aliasFilter.setValue('')"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            }
+        <!-- Boton para limpiar el input -->
+        @if (aliasFilter.value) {
+          <button
+            matSuffix
+            matButton
+            aria-label="Limpiar búsqueda"
+            class="cursor-pointer"
+            (click)="aliasFilter.setValue('')"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
 
-            @if (aliasFilter.hasError('minlength')) {
-              <mat-error>
-                El alias debe tener al menos 3 caracteres para realizar la búsqueda.
-              </mat-error>
-            }
+        @if (aliasFilter.hasError('maxlength')) {
+          <mat-error>El alias debe tener un máximo de 20 caracteres.</mat-error>
+        }
 
-            @if (aliasFilter.hasError('maxlength')) {
-              <mat-error>El alias debe tener un máximo de 20 caracteres.</mat-error>
-            }
-
-            @if (aliasFilter.value?.length === FILTER_MAX_LENGTH) {
-              <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
-            }
-          </mat-form-field>
-        </div>
-      </div>
+        @if (aliasFilter.value?.length === FILTER_MAX_LENGTH) {
+          <mat-hint align="end" class="!text-amber-600">Límite de caracteres alcanzado</mat-hint>
+        }
+      </mat-form-field>
     </div>
   </div>
 </mat-card>

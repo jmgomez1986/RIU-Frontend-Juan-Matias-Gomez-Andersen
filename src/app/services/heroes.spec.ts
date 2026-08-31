@@ -17,6 +17,12 @@ const mockHero: Hero = {
   universe: 'DC',
 };
 
+const makeHero = (id: string, name: string): Hero => ({
+  ...mockHero,
+  id,
+  name,
+});
+
 describe('Heroes', () => {
   let service: HeroesService;
   let httpTesting: HttpTestingController;
@@ -37,6 +43,7 @@ describe('Heroes', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
   it('should make a GET request to /api/heroes and return heroes with prefixed image URLs added', () => {
     let result: Hero[] | undefined;
     service.getHeroes().subscribe((heroes) => (result = heroes));
@@ -48,32 +55,104 @@ describe('Heroes', () => {
 
     expect(result).toEqual([{ ...mockHero, image: 'images/superman.jpg' }]);
   });
-  it('should make a GET request with _page and _per_page and return the paginated response', () => {
-    const mockResponse: HeroesResponsePaginated = {
-      first: 1,
-      prev: null,
-      next: null,
-      last: 2,
-      pages: 2,
-      items: 1,
-      data: [mockHero],
-    };
 
-    let result: HeroesResponsePaginated | undefined;
-    service.getHeroPaginated(1, 10).subscribe((resp) => (result = resp));
+  describe('getHeroesPaginated', () => {
+    const heroes = [
+      makeHero('1', 'Spiderman'),
+      makeHero('2', 'Superman'),
+      makeHero('3', 'Manolito el fuerte'),
+      makeHero('4', 'Bruce Wayne'),
+    ];
 
-    const req = httpTesting.expectOne('/api/heroes?_page=1&_per_page=10');
-    expect(req.request.method).toBe('GET');
+    it('devuelve solo héroes cuyo nombre contiene el criterio (parcial, case-insensitive y trim)', () => {
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 10, { name: '  MAN ' }).subscribe((r) => (result = r));
 
-    req.flush(mockResponse);
+      const req = httpTesting.expectOne('/api/heroes');
+      expect(req.request.method).toBe('GET');
+      req.flush(heroes);
 
-    expect(result).toEqual({
-      ...mockResponse,
-      data: [{ ...mockHero, image: 'images/superman.jpg' }],
+      expect(result?.items).toBe(3);
+      expect(result?.pages).toBe(1);
+      expect(result?.data.map((h) => h.name)).toEqual([
+        'Spiderman',
+        'Superman',
+        'Manolito el fuerte',
+      ]);
+      expect(result?.next).toBeNull();
+    });
+
+    it('devuelve una lista vacía cuando no hay coincidencias', () => {
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 10, { name: 'thor' }).subscribe((r) => (result = r));
+
+      const req = httpTesting.expectOne('/api/heroes');
+      req.flush([makeHero('1', 'Spiderman')]);
+
+      expect(result?.items).toBe(0);
+      expect(result?.data).toEqual([]);
+      expect(result?.pages).toBe(0);
+    });
+
+    it('devuelve todos los héroes cuando la query está vacía o es solo espacios', () => {
+      const allHeroes = [makeHero('1', 'Spiderman'), makeHero('2', 'Superman')];
+
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 10, { name: '   ' }).subscribe((r) => (result = r));
+
+      const req = httpTesting.expectOne('/api/heroes');
+      req.flush(allHeroes);
+
+      expect(result?.items).toBe(2);
+      expect(result?.data.map((h) => h.id)).toEqual(['1', '2']);
+    });
+
+    it('resuelve las URLs de imagen en los resultados', () => {
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 10, { name: 'spider' }).subscribe((r) => (result = r));
+      const req = httpTesting.expectOne('/api/heroes');
+      req.flush([makeHero('1', 'Spiderman')]);
+
+      expect(result?.data).toEqual([
+        { ...makeHero('1', 'Spiderman'), image: 'images/superman.jpg' },
+      ]);
+    });
+
+    it('pagina el resultado y expone first/prev/next/last/pages', () => {
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 2).subscribe((r) => (result = r));
+
+      const req = httpTesting.expectOne('/api/heroes');
+      req.flush(heroes);
+
+      expect(result?.data.map((h) => h.id)).toEqual(['1', '2']);
+      expect(result?.items).toBe(4);
+      expect(result?.pages).toBe(2);
+      expect(result?.first).toBe(1);
+      expect(result?.prev).toBeNull();
+      expect(result?.next).toBe(2);
+      expect(result?.last).toBe(2);
+    });
+
+    it('aplica también el filtro por alias (coincidencia parcial)', () => {
+      const heroesWithAlias = [
+        { ...makeHero('1', 'Clark Kent'), alias: 'Superman' },
+        { ...makeHero('2', 'Bruce Wayne'), alias: 'Batman' },
+        { ...makeHero('3', 'Diana Prince'), alias: 'Wonder Woman' },
+      ];
+
+      let result: HeroesResponsePaginated | undefined;
+      service.getHeroesPaginated(1, 10, { alias: 'woman' }).subscribe((r) => (result = r));
+
+      const req = httpTesting.expectOne('/api/heroes');
+      req.flush(heroesWithAlias);
+
+      expect(result?.items).toBe(1);
+      expect(result?.data.map((h) => h.alias)).toEqual(['Wonder Woman']);
     });
   });
+
   it('should make a GET request hero by id and response a Hero', () => {
-    // Lo declaro con Partial, porque la respuesta es la misma, pero sin el atributo id
     const mockResponse: Partial<Hero> = {
       name: 'Clark Kent',
       alias: 'Superman',
@@ -99,17 +178,6 @@ describe('Heroes', () => {
     });
   });
   it('should call add new hero request', () => {
-    const mockHeroBody: Partial<Hero> = {
-      name: 'Clark Kent',
-      alias: 'Superman',
-      powers: ['Vuelo'],
-      description: 'Descripción de prueba',
-      team: 'Liga de la Justicia',
-      image: 'superman.jpg',
-      status: 'Active',
-      category: 'Heroe',
-      universe: 'DC',
-    };
     const mockHeroResponse: NewHeroResponse = {
       res: mockHero,
     };
@@ -155,54 +223,5 @@ describe('Heroes', () => {
     expect(result).toEqual({
       ...mockResponse,
     });
-  });
-  it('should resolve image when image is a base64', () => {
-    const heroWithImageBase64: Hero = { ...mockHero, image: 'data:' };
-    const mockResponse: HeroesResponsePaginated = {
-      first: 1,
-      prev: null,
-      next: null,
-      last: 2,
-      pages: 2,
-      items: 1,
-      data: [heroWithImageBase64],
-    };
-
-    let result: HeroesResponsePaginated | undefined;
-    service.getHeroPaginated(1, 10).subscribe((resp) => (result = resp));
-
-    const req = httpTesting.expectOne('/api/heroes?_page=1&_per_page=10');
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockResponse);
-  });
-  it('should send name:contains and alias:contains when query is provided and omit it when empty', () => {
-    const mockResponse: HeroesResponsePaginated = {
-      first: 1,
-      prev: null,
-      next: null,
-      last: 1,
-      pages: 1,
-      items: 1,
-      data: [mockHero],
-    };
-
-    let resultWithQuery: HeroesResponsePaginated | undefined;
-    service
-      .getHeroPaginated(1, 10, { name: 'super', alias: 'superman' })
-      .subscribe((resp) => (resultWithQuery = resp));
-    const reqWithQuery = httpTesting.expectOne(
-      '/api/heroes?name:contains=super&alias:contains=superman&_page=1&_per_page=10',
-    );
-    expect(reqWithQuery.request.method).toBe('GET');
-    reqWithQuery.flush(mockResponse);
-    expect(resultWithQuery?.data).toHaveLength(1);
-
-    let resultEmpty: HeroesResponsePaginated | undefined;
-    service.getHeroPaginated(1, 10).subscribe((resp) => (resultEmpty = resp));
-    const reqEmpty = httpTesting.expectOne('/api/heroes?_page=1&_per_page=10');
-    expect(reqEmpty.request.method).toBe('GET');
-    reqEmpty.flush(mockResponse);
-    expect(resultEmpty?.data).toHaveLength(1);
   });
 });

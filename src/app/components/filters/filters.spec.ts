@@ -25,31 +25,21 @@ describe('Filters', () => {
       vi.useRealTimers();
     });
 
-    it('no emite si el control es valido pero el query queda 1-2 chars tras el trim', async () => {
+    it('emite el query normalizado (trim) para cualquier longitud', async () => {
       vi.useFakeTimers();
       const emit = vi.spyOn(component.nameFilterApplied, 'emit');
 
-      component.nameFilter.setValue(' ab ');
+      component.nameFilter.setValue('  ab  ');
       await vi.advanceTimersByTimeAsync(1000);
 
-      expect(emit).not.toHaveBeenCalled();
+      expect(emit).toHaveBeenCalledWith('ab');
     });
 
-    it('emite con trim cuando hay >= 3 chars', async () => {
+    it('no emite cuando el control es inválido (supera el máximo de caracteres)', async () => {
       vi.useFakeTimers();
       const emit = vi.spyOn(component.nameFilterApplied, 'emit');
 
-      component.nameFilter.setValue('  super  ');
-      await vi.advanceTimersByTimeAsync(1000);
-
-      expect(emit).toHaveBeenCalledWith('super');
-    });
-
-    it('no emite cuando el control es invalido (< 3 chars)', async () => {
-      vi.useFakeTimers();
-      const emit = vi.spyOn(component.nameFilterApplied, 'emit');
-
-      component.nameFilter.setValue('ab');
+      component.nameFilter.setValue('x'.repeat(25));
       expect(component.nameFilter.invalid).toBe(true);
       await vi.advanceTimersByTimeAsync(1000);
 
@@ -62,31 +52,21 @@ describe('Filters', () => {
       vi.useRealTimers();
     });
 
-    it('no emite si el control es valido pero el query queda 1-2 chars tras el trim', async () => {
+    it('emite el query normalizado (trim) para cualquier longitud', async () => {
       vi.useFakeTimers();
       const emit = vi.spyOn(component.aliasFilterApplied, 'emit');
 
-      component.aliasFilter.setValue(' ab ');
+      component.aliasFilter.setValue('  ab  ');
       await vi.advanceTimersByTimeAsync(1000);
 
-      expect(emit).not.toHaveBeenCalled();
+      expect(emit).toHaveBeenCalledWith('ab');
     });
 
-    it('emite con trim cuando hay >= 3 chars', async () => {
+    it('no emite cuando el control es inválido (supera el máximo de caracteres)', async () => {
       vi.useFakeTimers();
       const emit = vi.spyOn(component.aliasFilterApplied, 'emit');
 
-      component.aliasFilter.setValue('  super  ');
-      await vi.advanceTimersByTimeAsync(1000);
-
-      expect(emit).toHaveBeenCalledWith('super');
-    });
-
-    it('no emite cuando el control es invalido (< 3 chars)', async () => {
-      vi.useFakeTimers();
-      const emit = vi.spyOn(component.aliasFilterApplied, 'emit');
-
-      component.aliasFilter.setValue('ab');
+      component.aliasFilter.setValue('x'.repeat(25));
       expect(component.aliasFilter.invalid).toBe(true);
       await vi.advanceTimersByTimeAsync(1000);
 
@@ -96,9 +76,15 @@ describe('Filters', () => {
 
   describe('límite de caracteres (onTextInput)', () => {
     // Simula un evento 'input' con un target mínimamente tipado (sin 'any').
-    const createInputEvent = (value: string): {
+    const createInputEvent = (
+      value: string,
+    ): {
       event: Event;
-      target: { value: string; selectionStart: number; setSelectionRange: ReturnType<typeof vi.fn> };
+      target: {
+        value: string;
+        selectionStart: number;
+        setSelectionRange: ReturnType<typeof vi.fn>;
+      };
     } => {
       const target = { value, selectionStart: value.length, setSelectionRange: vi.fn() };
       const event = new Event('input');

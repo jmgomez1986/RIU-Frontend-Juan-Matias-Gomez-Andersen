@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { HeroesGrid } from '../../heroes/components/heroes-grid/heroes-grid';
 
 @Component({
   selector: 'app-heroes-page',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [HeroesGrid, MatButtonModule],
   templateUrl: './heroes-page.html',
 })

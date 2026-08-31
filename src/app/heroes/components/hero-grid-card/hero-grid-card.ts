@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,14 +17,18 @@ import { MatChipsModule } from '@angular/material/chips';
 import { Hero } from '../../../interfaces/heroes.interface';
 import { HeroesService } from '../../../services/heroes';
 import { MatIcon } from '@angular/material/icon';
+import { I18N } from '../../../shared/i18n/es';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-hero-grid-card',
-  imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIcon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIcon, NgOptimizedImage],
   templateUrl: './hero-grid-card.html',
 })
 export class HeroGridCard {
   hero = input.required<Hero>();
+  isPriorityImg = input<boolean>(false);
   heroDeleted = output<void>();
   // Services
   readonly heroesService = inject(HeroesService);
@@ -26,37 +37,37 @@ export class HeroGridCard {
 
   deleteHero() {
     Swal.fire({
-      title: '¿Está seguro que desea eliminar el héroe',
-      text: 'Se eliminará de la base de datos el héroe elegido',
+      title: I18N.heroes.card.confirmDeleteTitle,
+      text: I18N.heroes.card.confirmDeleteText,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonText: I18N.heroes.card.confirmButton,
+      cancelButtonText: I18N.heroes.card.cancelButton,
     }).then((result) => {
       if (result.isConfirmed) {
         this.heroesService
           .deleteHero(this.hero().id)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-          next: (resp) => {
-            Swal.fire({
-              title: 'Se eliminó el héroe con éxito',
-              text: 'El Héroe ha sido eliminado.',
-              icon: 'success',
-            });
-            this.heroDeleted.emit();
-          },
-          error: (err) => {
-            console.error('No se pudo eliminar el héroe:', err);
-            Swal.fire({
-              title: 'Error',
-              text: 'No se pudo eliminar el héroe. Intente nuevamente.',
-              icon: 'error',
-            });
-          },
-        });
+            next: () => {
+              Swal.fire({
+                title: I18N.heroes.card.deleteSuccessTitle,
+                text: I18N.heroes.card.deleteSuccessText,
+                icon: 'success',
+              });
+              this.heroDeleted.emit();
+            },
+            error: (err) => {
+              console.error('No se pudo eliminar el héroe:', err);
+              Swal.fire({
+                title: I18N.heroes.card.deleteErrorTitle,
+                text: I18N.heroes.card.deleteErrorText,
+                icon: 'error',
+              });
+            },
+          });
       }
     });
   }
@@ -66,5 +77,9 @@ export class HeroGridCard {
   }
   viewHero() {
     this.router.navigate([`/view-hero/${this.hero().id}`]);
+  }
+
+  isBase64(src: string): boolean {
+    return src.startsWith('data:image');
   }
 }

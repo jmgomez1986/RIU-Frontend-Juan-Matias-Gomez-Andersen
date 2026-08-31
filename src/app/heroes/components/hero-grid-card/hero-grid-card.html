@@ -1,12 +1,30 @@
-<mat-card class="overflow-hidden !shadow-xl" appearance="outlined">
-  <mat-card-content class="p-0">
+<mat-card class="overflow-hidden !shadow-xl flex h-full" appearance="outlined">
+  <mat-card-content class="p-0 flex-1">
     <!-- Image Container -->
     <div class="relative aspect-[3/4] w-full overflow-hidden">
-      <img
-        [src]="hero().image"
-        [alt]="`Image of ${hero().name}`"
-        class="h-full w-full object-cover"
-      />
+      <!-- Si la imagen está en Base64, usamos la etiqueta nativa estándar -->
+      @if (isBase64(hero().image)) {
+        <img
+          [src]="hero().image"
+          [alt]="`Imagen de ${hero().name}`"
+          width="350"
+          height="500"
+          class="h-full w-full object-cover"
+          data-testid="img-base64"
+        />
+      }
+      <!-- Si la imagen está en assets, aprovechamos NgOptimizedImage -->
+      @else {
+        <img
+          [ngSrc]="hero().image"
+          [alt]="`Imagen de ${hero().name}`"
+          [priority]="isPriorityImg()"
+          width="350"
+          height="500"
+          class="h-full w-full object-cover"
+          data-testid="img-normal"
+        />
+      }
 
       <!-- Top Overlays -->
       <div class="absolute top-3 left-3 flex items-center gap-2">
@@ -72,39 +90,33 @@
       </div>
     </div>
   </mat-card-content>
-  <mat-card-actions class="flex justify-between">
-    <div class="flex flex-col items-center">
-      <button
-        matButton="elevated"
-        class="!bg-red-400 !text-white"
-        aria-label="Delete Hero"
-        (click)="deleteHero()"
-      >
-        <mat-icon>delete</mat-icon>
-        Eliminar
-      </button>
-    </div>
-    <div class="flex flex-col items-center">
-      <button
-        matButton="elevated"
-        class="!bg-green-400 !text-white"
-        aria-label="View Hero"
-        (click)="viewHero()"
-      >
-        <mat-icon>visibility</mat-icon>
-        Consultar
-      </button>
-    </div>
-    <div class="flex flex-col items-center">
-      <button
-        matButton="elevated"
-        class="!bg-indigo-400 !text-white"
-        aria-label="Edit Hero"
-        (click)="editHero()"
-      >
-        <mat-icon>edit</mat-icon>
-        Editar
-      </button>
-    </div>
+  <mat-card-actions class="!flex !flex-col sm:!flex-row gap-2 w-full !p-2">
+    <button
+      matButton="elevated"
+      class="w-full sm:flex-1 !bg-red-400 !text-white"
+      aria-label="Eliminar héroe"
+      (click)="deleteHero()"
+    >
+      <mat-icon>delete</mat-icon>
+      Eliminar
+    </button>
+    <button
+      matButton="elevated"
+      class="w-full sm:flex-1 !bg-green-400 !text-white"
+      aria-label="Ver héroe"
+      (click)="viewHero()"
+    >
+      <mat-icon>visibility</mat-icon>
+      Consultar
+    </button>
+    <button
+      matButton="elevated"
+      class="w-full sm:flex-1 !bg-indigo-400 !text-white"
+      aria-label="Editar héroe"
+      (click)="editHero()"
+    >
+      <mat-icon>edit</mat-icon>
+      Editar
+    </button>
   </mat-card-actions>
 </mat-card>

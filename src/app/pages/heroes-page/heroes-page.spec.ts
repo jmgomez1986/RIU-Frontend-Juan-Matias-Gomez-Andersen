@@ -9,17 +9,16 @@ import { HeroesService } from '../../services/heroes';
 
 // Se mockea HeroesService por un fake que emite al instante (igual que heroes-grid.spec.ts),
 // para que el HeroesGrid real se renderice sin tocar HTTP y el template quede cubierto.
-// NO de usa TestBed.overrideComponent porque hace que el HTML no se renderice y no tenga cobertura
+// NO se usa TestBed.overrideComponent porque hace que el HTML no se renderice y no tenga cobertura.
 const fakePaginatedResponse: HeroesResponsePaginated = {
   first: 1,
-  prev: 1,
-  next: 2,
+  prev: null,
+  next: null,
   last: 1,
   pages: 1,
   items: 0,
   data: [],
 };
-
 describe('HeroesPage', () => {
   let component: HeroesPage;
   let fixture: ComponentFixture<HeroesPage>;
@@ -30,7 +29,7 @@ describe('HeroesPage', () => {
       imports: [HeroesPage],
       providers: [
         provideRouter([]),
-        { provide: HeroesService, useValue: { getHeroPaginated: () => of(fakePaginatedResponse) } },
+        { provide: HeroesService, useValue: { getHeroesPaginated: () => of(fakePaginatedResponse) } },
       ],
     }).compileComponents();
 

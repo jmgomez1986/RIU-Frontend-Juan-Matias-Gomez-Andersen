@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import Swal, { type SweetAlertResult } from 'sweetalert2';
+import { of, throwError } from 'rxjs';
+import { screen } from '@testing-library/angular';
 
 import { HeroGridCard } from './hero-grid-card';
 import { Hero } from '../../../interfaces/heroes.interface';
-import { of, throwError } from 'rxjs';
 import { HeroesService } from '../../../services/heroes';
+import { I18N } from '../../../shared/i18n/es';
 
 // Se crea el Mock del heroe cpmo una arrow function, para despues si es necesario, en otros test,
 // usarla para sobreescribir algun atributo
@@ -28,7 +30,6 @@ const createMockHero = (overrides: Partial<Hero> = {}): Hero => ({
 // No se toca HTTP ni hace falta provideHttpClientTesting (patrón ya usado en el repo).
 const createHeroesServiceMock = () => ({
   getHeroes: vi.fn(),
-  getHeroPaginated: vi.fn(),
   getHeroById: vi.fn(),
   addNewHero: vi.fn().mockReturnValue(of({ res: createMockHero() })),
   editHero: vi.fn().mockReturnValue(of(createMockHero())),
@@ -94,7 +95,7 @@ describe('HeroGridCard', () => {
     expect(statusElement).toBeTruthy();
   });
 
-  it('should display 3 chiips of powers ', () => {
+  it('should display 3 chips of powers ', () => {
     const chips = fixture.nativeElement.querySelectorAll('mat-chip') as NodeListOf<Element>;
     const chipTexts = Array.from(chips).map((chip) => chip.textContent?.trim());
 
@@ -145,14 +146,14 @@ describe('HeroGridCard', () => {
 
     expect(Swal.fire).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: '¿Está seguro que desea eliminar el héroe',
-        text: 'Se eliminará de la base de datos el héroe elegido',
+        title: I18N.heroes.card.confirmDeleteTitle,
+        text: I18N.heroes.card.confirmDeleteText,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: I18N.heroes.card.confirmButton,
+        cancelButtonText: I18N.heroes.card.cancelButton,
       }),
     );
 
@@ -174,21 +175,36 @@ describe('HeroGridCard', () => {
     await flushMicrotasks();
 
     expect(Swal.fire).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Se eliminó el héroe con éxito' }),
+      expect.objectContaining({ title: I18N.heroes.card.deleteSuccessTitle }),
     );
     expect(heroDeletedSpy).toHaveBeenCalledTimes(1);
   });
 
   it('deleteHero muestra un diálogo de error y loguea en consola cuando el servicio falla', async () => {
     mockSwalConfirmation(true);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     heroesService.deleteHero.mockReturnValue(throwError(() => new Error('Base de datos caída')));
 
     component.deleteHero();
     await flushMicrotasks();
 
     expect(errorSpy).toHaveBeenCalled();
-    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({ title: 'Error' }));
+    expect(Swal.fire).toHaveBeenCalledWith(
+      expect.objectContaining({ title: I18N.heroes.card.deleteErrorTitle }),
+    );
   });
 
+  it('should show image when is base 64', () => {
+    // Se setea el input "hero" con una imagen que simula ser que esta en base 64
+    fixture.componentRef.setInput(
+      'hero',
+      createMockHero({
+        image: 'data:image',
+      }),
+    );
+    fixture.detectChanges();
+
+    const imgElement = screen.getByTestId('img-base64');
+    expect(imgElement).toBeDefined();
+  });
 });
