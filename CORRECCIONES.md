@@ -63,12 +63,18 @@ Backlog de mejoras derivado de la devolución del proceso de evaluación.
 
 ## 5. Estilos
 
-- [ ] Reemplazar overrides con `!important` (styles.scss, clases `!bg-*`, `!shadow-*`,
-      `!text-*`) por tokens de Material (`--mat-*`) o theming.
-- [ ] Responsive de filtros (`grid-cols-5` → breakpoints) y formulario (`grid-cols-2`).
+- [x] Reemplazar overrides con !important (styles.scss, clases !bg-_, !shadow-_, !text-*)
+      por la API de overrides de Angular Material (mixins mat.form-field-overrides y
+      mat.paginator-overrides incluidos en el selector html del theme global,
+      junto a mat.theme, segun la guia theming > "Component Tokens").
+- [x] Responsive de:
+  - Grilla de heroes
+  - Card de cada heroe
+  - Filtros en la grilla
+  - Formulario de creacion/Edicion/Consulta de heroe
 
-## Orden de implementación
+# Extras:
 
-1. Búsqueda en servicio + tests ✅ → 2) min. 3 caracteres ✅ → 3) tests grilla ✅ →
-2. labels ✅ → 5) OnPush ✅ → 6) ruta `**` ✅ → 7) limpieza + ESLint ✅ →
-3. NgOptimizedImage → 9) estilos/responsive.
+## Traducciones
+
+Se prepara el desarrollo centralizando textos para un futuro agregar cambio de idioma i18n

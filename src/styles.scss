@@ -8,61 +8,56 @@
 
 html {
   height: 100%;
+  color-scheme: dark;
   @include mat.theme(
     (
       color: (
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
-      typography: Roboto,
+      typography: (
+        plain-family: Roboto,
+        brand-family: Open Sans,
+        bold-weight: 900,
+        medium-weight: 500,
+        regular-weight: 300,
+      ),
       density: 0,
     )
   );
+
+  // Overrides de tokens de Angular Material, centralizados en el theme con la
+  // API documentada (guia theming > "Component Tokens"). Los nombres van sin
+  // el prefijo --mat-.
+  @include mat.form-field-overrides(
+    (
+      container-height: 40px,
+      container-vertical-padding: 8px,
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: transparent,
+    )
+  );
+  // --mat-form-field-container-height: 40px;
+  // --mat-form-field-container-vertical-padding: 8px;
+  // --mat-paginator-container-background-color: transparent;
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
 
-//Estilos para Angular Material
-
-//Se ajusta la altura del wrapper del mat-form-field
-.custom-css-height .mat-mdc-text-field-wrapper {
-  height: 40px !important;
-}
-// Se ajusta la alineacion vertical del mat-form-field
-.custom-css-height .mat-mdc-form-field-infix {
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
-  min-height: unset !important;
-}
-// Se ajusta aineacion de label flotantes
-.custom-css-float-label {
-  label {
-    top: 50% !important;
-  }
-}
-// Se ajusta matpaginator
-mat-paginator {
-  background: transparent !important;
-}
-
-// Estilos para SweeWal
+/* Estilos para SweetAlert el !important es necesario
+   porque SweetAlert aplica sus propios estilos con alta especificidad.
+*/
 
 // Se ajusta el texto de consulta
 div:where(.swal2-container) h2:where(.swal2-title) {
