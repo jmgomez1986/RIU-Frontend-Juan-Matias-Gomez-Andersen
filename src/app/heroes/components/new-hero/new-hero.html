@@ -12,10 +12,7 @@
       <div class="w-full">
         <!-- Name Field -->
         <div class="w-full mb-5">
-          <mat-form-field
-            appearance="outline"
-            class="w-full"
-          >
+          <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nombre</mat-label>
             <input
               matInput
@@ -61,10 +58,7 @@
           </div>
           <!-- Category Field -->
           <div class="w-full">
-            <mat-form-field
-              appearance="outline"
-              class="w-full"
-            >
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Categoría</mat-label>
               <mat-select formControlName="category">
                 @for (category of heroeCategories; track category) {
@@ -79,10 +73,7 @@
       <div class="w-full">
         <!-- Alias Field -->
         <div class="w-full mb-5">
-          <mat-form-field
-            appearance="outline"
-            class="w-full"
-          >
+          <mat-form-field appearance="outline" class="w-full">
             <mat-label>Alias</mat-label>
             <input
               matInput
@@ -108,10 +99,7 @@
         </div>
         <!-- Universe Field -->
         <div class="w-full mb-5">
-          <mat-form-field
-            appearance="outline"
-            class="w-full"
-          >
+          <mat-form-field appearance="outline" class="w-full">
             <mat-label>Universo</mat-label>
             <input
               matInput
@@ -142,10 +130,7 @@
     <div class="grid grid-cols-1 items.start">
       <!-- Team Field -->
       <div class="w-full mb-5">
-        <mat-form-field
-          appearance="outline"
-          class="w-full"
-        >
+        <mat-form-field appearance="outline" class="w-full">
           <mat-label>Equipo</mat-label>
           <input
             matInput
@@ -212,12 +197,14 @@
             </mat-chip-row>
           }
         </mat-chip-grid>
-        <input
-          id="heroPowers"
-          placeholder="Nuevo poder..."
-          [matChipInputFor]="reactiveChipGrid"
-          (matChipInputTokenEnd)="addReactivePowers($event)"
-        />
+        @if (mode() !== 'view') {
+          <input
+            id="heroPowers"
+            placeholder="Nuevo poder..."
+            [matChipInputFor]="reactiveChipGrid"
+            (matChipInputTokenEnd)="addReactivePowers($event)"
+          />
+        }
       </mat-form-field>
     </div>
   </form>
